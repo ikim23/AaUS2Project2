@@ -1,4 +1,4 @@
-﻿namespace BPlusTree
+﻿namespace BPlusTree.Writables
 {
     public interface IWritable
     {

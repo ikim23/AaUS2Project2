@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Text;
 
-namespace BPlusTree
+namespace BPlusTree.Writables
 {
-    public struct FixedString : IWritable
+    public class WritableString : IComparable<WritableString>, IWritable
     {
         public int ByteSize => sizeof(int) + MaxLength;
         public int MaxLength { get; }
@@ -16,9 +16,13 @@ namespace BPlusTree
                 _value = value;
             }
         }
-        private string _value;
+        private string _value = String.Empty;
 
-        public FixedString(int maxLength) : this()
+        public WritableString()
+        {
+        }
+
+        public WritableString(int maxLength)
         {
             MaxLength = maxLength;
         }
@@ -38,5 +42,7 @@ namespace BPlusTree
             var valueLength = BitConverter.ToInt32(bytes, index);
             Value = Encoding.UTF8.GetString(bytes, index + sizeof(int), valueLength);
         }
+
+        public int CompareTo(WritableString other) => Value.CompareTo(other.Value);
     }
 }

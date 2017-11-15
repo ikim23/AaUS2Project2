@@ -1,10 +1,12 @@
 ﻿using System;
+using BPlusTree.DataStructures;
+using BPlusTree.Writables;
 
 namespace BPlusTree
 {
     public class Patient : IWritable
     {
-        public int ByteSize => _firstName.ByteSize + _lastName.ByteSize + sizeof(long) + sizeof(int);
+        public int ByteSize => ByteUtils.ByteSize(_firstName, _lastName, _birthday, _cardId, Hospitalizations);
         public string FirstName
         {
             get => _firstName.Value;
@@ -16,26 +18,28 @@ namespace BPlusTree
             get => _lastName.Value;
             set => _lastName.Value = value;
         }
-        public DateTime Birthday { get; set; }
-        public int CardId { get; set; }
-        private FixedString _firstName = new FixedString(25);
-        private FixedString _lastName = new FixedString(25);
-
-        public byte[] GetBytes()
+        public DateTime Birthday
         {
-            var birthday = BitConverter.GetBytes(Birthday.Ticks);
-            var cardId = BitConverter.GetBytes(CardId);
-            var destIdx = 0;
-            var bytes = new byte[ByteSize];
-            Array.Copy(_firstName.GetBytes(), 0, bytes, destIdx, _firstName.ByteSize);
-            destIdx += _firstName.ByteSize;
-            Array.Copy(_lastName.GetBytes(), 0, bytes, destIdx, _lastName.ByteSize);
-            destIdx += _lastName.ByteSize;
-            Array.Copy(birthday, 0, bytes, destIdx, sizeof(long));
-            destIdx += sizeof(long);
-            Array.Copy(cardId, 0, bytes, destIdx, sizeof(int));
-            return bytes;
+            get => _birthday.Value;
+            set => _birthday.Value = value;
         }
+        public int CardId
+        {
+            get => _cardId.Value;
+            set => _cardId.Value = value;
+        }
+        public SortedArray<WritableDateTime, Hospitalization> Hospitalizations { get; }
+        private readonly WritableString _firstName = new WritableString(25);
+        private readonly WritableString _lastName = new WritableString(25);
+        private readonly WritableDateTime _birthday = new WritableDateTime();
+        private readonly WritableInt _cardId = new WritableInt();
+
+        public Patient()
+        {
+            Hospitalizations = new SortedArray<WritableDateTime, Hospitalization>(100);
+        }
+
+        public byte[] GetBytes() => ByteUtils.Join(_firstName, _lastName, _birthday, _cardId, Hospitalizations);
 
         public void FromBytes(byte[] bytes, int index = 0)
         {
@@ -44,9 +48,11 @@ namespace BPlusTree
             srcIdx += _firstName.ByteSize;
             _lastName.FromBytes(bytes, srcIdx);
             srcIdx += _lastName.ByteSize;
-            Birthday = new DateTime(BitConverter.ToInt64(bytes, srcIdx));
-            srcIdx += sizeof(long);
-            CardId = BitConverter.ToInt32(bytes, srcIdx);
+            _birthday.FromBytes(bytes, srcIdx);
+            srcIdx += _birthday.ByteSize;
+            _cardId.FromBytes(bytes, srcIdx);
+            srcIdx += _cardId.ByteSize;
+            Hospitalizations.FromBytes(bytes, srcIdx);
         }
     }
 }
