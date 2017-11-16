@@ -44,5 +44,7 @@ namespace BPlusTree.Writables
         }
 
         public int CompareTo(WritableString other) => Value.CompareTo(other.Value);
+
+        public override string ToString() => Value;
     }
 }

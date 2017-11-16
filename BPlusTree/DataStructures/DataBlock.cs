@@ -31,5 +31,7 @@ namespace BPlusTree.DataStructures
         public byte[] GetBytes() => ByteUtils.Join(_nextBlock, _records);
 
         public void FromBytes(byte[] bytes, int index = 0) => ByteUtils.FromBytes(bytes, index, _nextBlock, _records);
+
+        public override string ToString() => $"NextBlock: {_nextBlock}\nRecords: {_records}";
     }
 }

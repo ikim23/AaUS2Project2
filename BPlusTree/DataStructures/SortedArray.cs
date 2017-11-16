@@ -111,6 +111,8 @@ namespace BPlusTree.DataStructures
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        public override string ToString() => $"\n{string.Join(",\n", _items.Take(Count))}";
     }
 
     internal class SortedArrayItem<TK, TV> : IWritable where TK : IComparable<TK>, IWritable, new() where TV : IWritable, new()
@@ -133,6 +135,6 @@ namespace BPlusTree.DataStructures
 
         public void FromBytes(byte[] bytes, int index = 0) => ByteUtils.FromBytes(bytes, index, Key, Value);
 
-        public override string ToString() => $"[{Key.ToString()}: {Value.ToString()}]";
+        public override string ToString() => StringUtils.PadArrayItem($"Key: {Key},\nValue: {StringUtils.Pad(Value.ToString())}");
     }
 }

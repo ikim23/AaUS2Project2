@@ -45,6 +45,7 @@
     <Compile Include="DataStructures\DataBlock.cs" />
     <Compile Include="DataStructures\IndexBlock.cs" />
     <Compile Include="DataStructures\SortedArray.cs" />
+    <Compile Include="StringUtils.cs" />
     <Compile Include="Writables\ByteUtils.cs" />
     <Compile Include="Writables\WritableDateTime.cs" />
     <Compile Include="Writables\WritableInt.cs" />
