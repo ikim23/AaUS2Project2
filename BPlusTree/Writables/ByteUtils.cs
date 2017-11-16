@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Linq;
-using BPlusTree.Writables;
 
-namespace BPlusTree
+namespace BPlusTree.Writables
 {
     internal class ByteUtils
     {
@@ -19,6 +18,16 @@ namespace BPlusTree
                 dstIdx += w.ByteSize;
             }
             return bytes;
+        }
+
+        public static void FromBytes(byte[] bytes, int index, params IWritable[] writables)
+        {
+            var srcIdx = index;
+            foreach (var writable in writables)
+            {
+                writable.FromBytes(bytes, srcIdx);
+                srcIdx += writable.ByteSize;
+            }
         }
     }
 }
