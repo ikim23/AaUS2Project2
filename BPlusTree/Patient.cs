@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using BPlusTree.DataStructures;
 using BPlusTree.Writables;
 
@@ -42,5 +43,8 @@ namespace BPlusTree
         public byte[] GetBytes() => ByteUtils.Join(_firstName, _lastName, _birthday, _cardId, Hospitalizations);
 
         public void FromBytes(byte[] bytes, int index = 0) => ByteUtils.FromBytes(bytes, index, _firstName, _lastName, _birthday, _cardId, Hospitalizations);
+
+        public override string ToString() => $"\nFirstName: {_firstName},\nLastName: {_lastName},\nBirthday: {_birthday},\nCardId: {_cardId},\nHospitalizations: {Hospitalizations}";
+
     }
 }
