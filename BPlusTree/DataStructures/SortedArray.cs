@@ -8,7 +8,7 @@ namespace BPlusTree.DataStructures
 {
     public class SortedArray<TK, TV> : IEnumerable<TV>, IWritable where TK : IComparable<TK>, IWritable, new() where TV : IWritable, new()
     {
-        public int ByteSize => MaxSize * new SortedArrayItem<TK, TV>().ByteSize + sizeof(int);
+        public int ByteSize => sizeof(int) + MaxSize * (_items[0] ?? new SortedArrayItem<TK, TV>()).ByteSize;
         public int MaxSize { get; }
         public int Count { get; internal set; }
         private readonly SortedArrayItem<TK, TV>[] _items;
@@ -113,7 +113,7 @@ namespace BPlusTree.DataStructures
 
     internal class SortedArrayItem<TK, TV> : IWritable where TK : IComparable<TK>, IWritable, new() where TV : IWritable, new()
     {
-        public int ByteSize => ByteUtils.ByteSize(new TK(), new TV());
+        public int ByteSize => ByteUtils.ByteSize(Key, Value);
         public TK Key { get; internal set; }
         public TV Value { get; internal set; }
 
@@ -129,11 +129,7 @@ namespace BPlusTree.DataStructures
 
         public byte[] GetBytes() => ByteUtils.Join(Key, Value);
 
-        public void FromBytes(byte[] bytes, int index = 0)
-        {
-            Key.FromBytes(bytes, index);
-            Value.FromBytes(bytes, index + Key.ByteSize);
-        }
+        public void FromBytes(byte[] bytes, int index = 0) => ByteUtils.FromBytes(bytes, index, Key, Value);
 
         public override string ToString() => $"[{Key.ToString()}: {Value.ToString()}]";
     }

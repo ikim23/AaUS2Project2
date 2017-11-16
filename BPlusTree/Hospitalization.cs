@@ -27,14 +27,6 @@ namespace BPlusTree
 
         public byte[] GetBytes() => ByteUtils.Join(_start, _end, _diagnosis);
 
-        public void FromBytes(byte[] bytes, int index = 0)
-        {
-            var srcIdx = index;
-            _start.FromBytes(bytes, srcIdx);
-            srcIdx += _start.ByteSize;
-            _end.FromBytes(bytes, srcIdx);
-            srcIdx += _end.ByteSize;
-            _diagnosis.FromBytes(bytes, srcIdx);
-        }
+        public void FromBytes(byte[] bytes, int index = 0) => ByteUtils.FromBytes(bytes, index, _start, _end, _diagnosis);
     }
 }
