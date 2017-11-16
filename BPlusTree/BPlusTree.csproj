@@ -48,6 +48,7 @@
     <Compile Include="Writables\ByteUtils.cs" />
     <Compile Include="Writables\WritableDateTime.cs" />
     <Compile Include="Writables\WritableInt.cs" />
+    <Compile Include="Writables\WritableLong.cs" />
     <Compile Include="Writables\WritableString.cs" />
     <Compile Include="Hospitalization.cs" />
     <Compile Include="Writables\IWritable.cs" />
