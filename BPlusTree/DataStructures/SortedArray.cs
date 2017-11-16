@@ -102,6 +102,8 @@ namespace BPlusTree.DataStructures
 
         public TV[] ToArray() => _items.Select(i => i.Value).Take(Count).ToArray();
 
+        public Tuple<TK, TV>[] ToKeyValueArray() => _items.Select(i => new Tuple<TK, TV>(i.Key, i.Value)).Take(Count).ToArray();
+
         public IEnumerator<TV> GetEnumerator()
         {
             for (var i = 0; i < Count; i++)

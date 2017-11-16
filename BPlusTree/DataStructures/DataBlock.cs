@@ -1,45 +1,35 @@
-﻿using BPlusTree.Writables;
+﻿using System;
+using BPlusTree.Writables;
 
 namespace BPlusTree.DataStructures
 {
-    internal class DataBlock<TK, TV> : IWritable where TK : IWritable, new() where TV : IWritable, new()
+    public class DataBlock<TK, TV> : IWritable where TK : IComparable<TK>, IWritable, new() where TV : IWritable, new()
     {
-        public int ByteSize => MaxSize * (new TK().ByteSize + new TV().ByteSize) + sizeof(int);
-        public int MaxSize { get; }
-        //private SortedArray<TK, TV> _records;
-        //public DataBlock(int size)
-        //{
-        //    MaxSize = size;
-        //    _records = new SortedArray<TK, TV>(size);
-        //}
-
-        public byte[] GetBytes()
+        public int ByteSize => sizeof(long) + _records.ByteSize;
+        public int MaxSize => _records.MaxSize;
+        public long NextBlock
         {
-            var bytes = new byte[ByteSize];
-            //var count = BitConverter.GetBytes(_records.Count);
-            //Array.Copy(count, 0, bytes, 0, sizeof(int));
-            //var destIdx = sizeof(int);
-            //foreach (var record in _records)
-            //{
-            //    var key = record.Key;
-            //    Array.Copy(key.GetBytes(), 0, bytes, destIdx, key.ByteSize);
-            //    destIdx += key.ByteSize;
-            //    var value = record.Value;
-            //    Array.Copy(value.GetBytes(), 0, bytes, destIdx, value.ByteSize);
-            //    destIdx += value.ByteSize;
-            //}
-            return bytes;
+            get => _nextBlock.Value;
+            set => _nextBlock.Value = value;
+        }
+        private readonly SortedArray<TK, TV> _records;
+        private readonly WritableLong _nextBlock = new WritableLong();
+
+        public DataBlock(int size)
+        {
+            _records = new SortedArray<TK, TV>(size);
         }
 
-        public void FromBytes(byte[] bytes, int index = 0)
-        {
-            //var srcIdx = index;
-            //var count = BitConverter.ToInt32(bytes, srcIdx);
-            //srcIdx += sizeof(int);
-            //for (var i = 0; i < count; i++)
-            //{
-            //    var a = new TK().FromBytes();
-            //}
-        }
+        public void Insert(TK key, TV value) => _records.Insert(key, value);
+
+        public TV Remove(TK key) => _records.Remove(key);
+
+        public TV Find(TK key) => _records.Find(key);
+
+        public Tuple<TK, TV>[] ToKeyValueArray() => _records.ToKeyValueArray();
+
+        public byte[] GetBytes() => ByteUtils.Join(_nextBlock, _records);
+
+        public void FromBytes(byte[] bytes, int index = 0) => ByteUtils.FromBytes(bytes, index, _nextBlock, _records);
     }
 }
