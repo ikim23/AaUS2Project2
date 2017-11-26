@@ -24,8 +24,8 @@ namespace BPlusTree.Writables
             Value = new DateTime(ticks);
         }
 
-        public override string ToString() => $"{Value:dd.MM.yyyy}";
-
         public int CompareTo(WritableDateTime other) => Value.CompareTo(other.Value);
+
+        public override string ToString() => $"{Value:dd.MM.yyyy}";
     }
 }

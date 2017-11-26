@@ -42,11 +42,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataStructures\DataBlock.cs" />
-    <Compile Include="DataStructures\IndexBlock.cs" />
+    <Compile Include="DataStructures\BlockFactory.cs" />
+    <Compile Include="DataStructures\BPlusTree.cs" />
+    <Compile Include="Blocks\ControlBlock.cs" />
+    <Compile Include="Blocks\DataBlock.cs" />
+    <Compile Include="Blocks\EmptyBlock.cs" />
+    <Compile Include="Blocks\IBlock.cs" />
+    <Compile Include="Blocks\IndexBlock.cs" />
     <Compile Include="DataStructures\SortedArray.cs" />
+    <Compile Include="DataStructures\SortedSet.cs" />
     <Compile Include="StringUtils.cs" />
     <Compile Include="Writables\ByteUtils.cs" />
+    <Compile Include="Writables\WritableChar.cs" />
     <Compile Include="Writables\WritableDateTime.cs" />
     <Compile Include="Writables\WritableInt.cs" />
     <Compile Include="Writables\WritableLong.cs" />
