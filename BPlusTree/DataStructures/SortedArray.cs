@@ -11,6 +11,14 @@ namespace BPlusTree.DataStructures
         public int ByteSize => sizeof(int) + MaxSize * (_items[0] ?? new SortedArrayItem<TK, TV>()).ByteSize;
         public int MaxSize { get; }
         public int Count { get; internal set; }
+        public TV this[int index]
+        {
+            get
+            {
+                if (index < 0 || index >= Count) throw new IndexOutOfRangeException();
+                return _items[index].Value;
+            }
+        }
         private readonly SortedArrayItem<TK, TV>[] _items;
 
         public SortedArray(int size)
@@ -22,7 +30,8 @@ namespace BPlusTree.DataStructures
         public void Insert(TK key, TV value)
         {
             if (Count == MaxSize) throw new ArgumentException("List is already full");
-            var index = Bisection(key);
+            var index = FindInsertionIndex(key);
+            if (AreEqual(key, index)) throw new ArgumentException("Item with same key already exists");
             Array.Copy(_items, index, _items, index + 1, Count - index);
             _items[index] = new SortedArrayItem<TK, TV>(key, value);
             Count++;
@@ -30,7 +39,8 @@ namespace BPlusTree.DataStructures
 
         public TV Remove(TK key)
         {
-            var index = FindIndex(key);
+            var index = FindInsertionIndex(key);
+            if (!AreEqual(key, index)) throw new KeyNotFoundException();
             var value = _items[index].Value;
             Array.Copy(_items, index + 1, _items, index, Count - (index + 1));
             Count--;
@@ -39,11 +49,12 @@ namespace BPlusTree.DataStructures
 
         public TV Find(TK key)
         {
-            var index = FindIndex(key);
+            var index = FindInsertionIndex(key);
+            if (!AreEqual(key, index)) throw new KeyNotFoundException();
             return _items[index].Value;
         }
 
-        private int FindIndex(TK key)
+        public int FindInsertionIndex(TK key)
         {
             var lowerBound = 0;
             var upperBound = Count - 1;
@@ -55,22 +66,13 @@ namespace BPlusTree.DataStructures
                 else if (cmp > 0) lowerBound = index + 1;
                 else return index;
             }
-            throw new KeyNotFoundException();
+            return lowerBound;
         }
 
-        private int Bisection(TK key)
+        private bool AreEqual(TK key, int itemOnIndex)
         {
-            var lowerBound = 0;
-            var upperBound = Count - 1;
-            while (lowerBound <= upperBound)
-            {
-                var index = lowerBound + (upperBound - lowerBound) / 2;
-                var cmp = key.CompareTo(_items[index].Key);
-                if (cmp < 0) upperBound = index - 1;
-                else if (cmp > 0) lowerBound = index + 1;
-                else throw new ArgumentException("Item with same key already exists");
-            }
-            return lowerBound;
+            var item = _items[itemOnIndex];
+            return item != null && key.CompareTo(item.Key) == 0;
         }
 
         public byte[] GetBytes()

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BPlusTree;
-using BPlusTree.DataStructures;
+using BPlusTree.Blocks;
 using BPlusTree.Writables;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -10,6 +10,8 @@ namespace DataStructuresUnitTest
 {
     internal static class Utils
     {
+        public static int RandomDataBlockSize = 10;
+
         public static string Print<T>(this IEnumerable<T> enumerable) => $"[{string.Join(", ", enumerable)}]";
 
         public static string RandomString(Random random, int length)
@@ -65,7 +67,7 @@ namespace DataStructuresUnitTest
 
         public static DataBlock<WritableInt, Patient> RandomDataBlock(Random random)
         {
-            var block = new DataBlock<WritableInt, Patient>(10);
+            var block = new DataBlock<WritableInt, Patient>(RandomDataBlockSize);
             var count = random.Next(1, block.MaxSize);
             for (var i = 0; i < count; i++)
                 block.Insert(new WritableInt(i), RandomPatient(random));
