@@ -48,13 +48,14 @@ namespace BPlusTree.DataStructures
             while (block is IndexBlock<TK>)
             {
                 parentBlock = (IndexBlock<TK>)block;
-                var childAddress = parentBlock.GetChildAddress(key);
+                //var childAddress = parentBlock.GetChildAddress(key);
+                var childAddress = parentBlock.Find(key);
                 block = _factory.ReadBlock(childAddress);
             }
             var dataBlock = (DataBlock<TK, TV>)block;
-            Console.Write(key + ": ");
-            var vals = dataBlock.ToKeyValueArray().Select(kv => kv.Item2);
-            Console.WriteLine(string.Join(",", vals));
+            //Console.Write(key + ": ");
+            //var vals = dataBlock.ToKeyValueArray().Select(kv => kv.Item2);
+            //Console.WriteLine(string.Join(",", vals));
             return dataBlock.Find(key);
         }
 

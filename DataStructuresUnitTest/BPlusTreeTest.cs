@@ -13,7 +13,7 @@ namespace DataStructuresUnitTest
         public void InsertTest()
         {
             var testFile = $"{DateTime.Now.Ticks}.bin";
-            var reps = 30;
+            var reps = 100_000;
             var tree = new BPlusTree<WritableInt, WritableInt>(5, testFile);
             for (var i = 0; i < reps; i++)
             {
@@ -29,15 +29,15 @@ namespace DataStructuresUnitTest
             for (var i = 0; i < reps; i++)
             {
                 //Console.WriteLine(i);
-                try
-                {
-                    var result = tree.Find(new WritableInt(i));
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(i);
-                }
-                //Assert.AreEqual(i, result.Value);
+                //try
+                //{
+                var result = tree.Find(new WritableInt(i));
+                //}
+                //catch (Exception e)
+                //{
+                //    Console.WriteLine(i);
+                //}
+                Assert.AreEqual(i, result.Value);
             }
             tree.Dispose();
             //File.Delete(testFile);
