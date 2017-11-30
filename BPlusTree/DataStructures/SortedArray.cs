@@ -11,25 +11,42 @@ namespace BPlusTree.DataStructures
         public int ByteSize => sizeof(int) + MaxSize * (_items[0] ?? new SortedArrayItem<TK, TV>()).ByteSize;
         public int MaxSize { get; }
         public int Count { get; internal set; }
-        public TV this[int index]
-        {
-            get
-            {
-                if (index < 0 || index >= Count) throw new IndexOutOfRangeException();
-                return _items[index].Value;
-            }
-        }
         private readonly SortedArrayItem<TK, TV>[] _items;
 
         public SortedArray(int size)
         {
             MaxSize = size;
-            _items = new SortedArrayItem<TK, TV>[size];
+            _items = new SortedArrayItem<TK, TV>[size + 1];
         }
+
+        public TK Min()
+        {
+            if (Count == 0) throw new InvalidOperationException();
+            return _items[0].Key;
+        }
+
+        public SortedArray<TK, TV> Split(TK key, TV value)
+        {
+            if (!IsFull()) throw new ArgumentException($"Only full {nameof(SortedArray<TK, TV>)} can be split");
+            InsertNoMaxSizeCheck(key, value);
+            var rightSplit = new SortedArray<TK, TV>(MaxSize);
+            var middle = Count / 2;
+            Array.Copy(_items, middle, rightSplit._items, 0, Count - middle);
+            rightSplit.Count = Count - middle;
+            Count = middle;
+            return rightSplit;
+        }
+
+        public bool IsFull() => Count >= MaxSize;
 
         public void Insert(TK key, TV value)
         {
             if (Count == MaxSize) throw new ArgumentException("List is already full");
+            InsertNoMaxSizeCheck(key, value);
+        }
+
+        private void InsertNoMaxSizeCheck(TK key, TV value)
+        {
             var index = FindInsertionIndex(key);
             if (AreEqual(key, index)) throw new ArgumentException("Item with same key already exists");
             Array.Copy(_items, index, _items, index + 1, Count - index);
@@ -45,6 +62,12 @@ namespace BPlusTree.DataStructures
             Array.Copy(_items, index + 1, _items, index, Count - (index + 1));
             Count--;
             return value;
+        }
+
+        public bool Contains(TK key)
+        {
+            var index = FindInsertionIndex(key);
+            return AreEqual(key, index);
         }
 
         public TV Find(TK key)
@@ -71,6 +94,7 @@ namespace BPlusTree.DataStructures
 
         private bool AreEqual(TK key, int itemOnIndex)
         {
+            if (itemOnIndex >= MaxSize) return false;
             var item = _items[itemOnIndex];
             return item != null && key.CompareTo(item.Key) == 0;
         }

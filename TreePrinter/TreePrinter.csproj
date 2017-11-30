@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{29C08F44-BAED-4523-8756-3464A6DF94B1}</ProjectGuid>
+    <ProjectGuid>{B30DEE06-B9B5-4A8F-AAB1-7BA7A4AFFAEF}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>BPlusTree</RootNamespace>
-    <AssemblyName>BPlusTree</AssemblyName>
+    <RootNamespace>TreePrinter</RootNamespace>
+    <AssemblyName>TreePrinter</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -42,33 +42,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataStructures\BlockFactory.cs" />
-    <Compile Include="DataStructures\BPlusTree.cs" />
-    <Compile Include="Blocks\ControlBlock.cs" />
-    <Compile Include="Blocks\DataBlock.cs" />
-    <Compile Include="Blocks\EmptyBlock.cs" />
-    <Compile Include="Blocks\IBlock.cs" />
-    <Compile Include="Blocks\IndexBlock.cs" />
-    <Compile Include="DataStructures\SortedBlock.cs" />
-    <Compile Include="DataStructures\SortedIndex.cs" />
-    <Compile Include="DataStructures\SortedArray.cs" />
-    <Compile Include="StringUtils.cs" />
-    <Compile Include="Writables\ByteUtils.cs" />
-    <Compile Include="Writables\WritableArray.cs" />
-    <Compile Include="Writables\WritableChar.cs" />
-    <Compile Include="Writables\WritableDateTime.cs" />
-    <Compile Include="Writables\WritableInt.cs" />
-    <Compile Include="Writables\WritableLong.cs" />
-    <Compile Include="Writables\WritableString.cs" />
-    <Compile Include="Hospitalization.cs" />
-    <Compile Include="Writables\IWritable.cs" />
-    <Compile Include="Patient.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BPlusTree\BPlusTree.csproj">
+      <Project>{29C08F44-BAED-4523-8756-3464A6DF94B1}</Project>
+      <Name>BPlusTree</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

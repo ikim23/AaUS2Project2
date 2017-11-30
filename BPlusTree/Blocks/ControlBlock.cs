@@ -31,5 +31,7 @@ namespace BPlusTree.Blocks
         public byte[] GetBytes() => ByteUtils.Join(_type, _rootAddr, _emptyAddr);
 
         public void FromBytes(byte[] bytes, int index = 0) => ByteUtils.FromBytes(bytes, index + _type.ByteSize, _rootAddr, _emptyAddr);
+
+        public override string ToString() => $"Type: {Type}\nByteSize: {ByteSize}\nAddress: {Address}\nEmpty: {EmptyAddr}\nRoot: {RootAddr}";
     }
 }

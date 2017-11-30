@@ -7,6 +7,7 @@ namespace BPlusTree.DataStructures
 {
     public class BlockFactory<TK, TV> : IDisposable where TK : IComparable<TK>, IWritable, new() where TV : IWritable, new()
     {
+        public int BlockByteSize { get; }
         public int DataBlockRecordSize { get; }
         private readonly ControlBlock _cb = new ControlBlock();
         private readonly WritableChar _blockType = new WritableChar();
@@ -15,9 +16,9 @@ namespace BPlusTree.DataStructures
 
         public BlockFactory(int dataBlockRecordSize, string file)
         {
+            BlockByteSize = new DataBlock<TK, TV>(dataBlockRecordSize).ByteSize;
             DataBlockRecordSize = dataBlockRecordSize;
-            var buffSize = new DataBlock<TK, TV>(dataBlockRecordSize).ByteSize;
-            _buffer = new byte[buffSize];
+            _buffer = new byte[BlockByteSize];
             var exists = File.Exists(file);
             _stream = new FileStream(file, FileMode.OpenOrCreate);
             if (!exists) WriteBlock(_cb, 0);
@@ -58,7 +59,7 @@ namespace BPlusTree.DataStructures
                         WriteBlock(next, next.Address);
                     }
                     _stream.SetLength(lastAddress);
-                    lastAddress -=_buffer.Length;
+                    lastAddress -= _buffer.Length;
                 }
             }
             else
@@ -92,33 +93,61 @@ namespace BPlusTree.DataStructures
             return block;
         }
 
-        public void WriteBlock(IBlock block)
+        public long GetFreeAddress()
         {
             var freeAddr = _cb.EmptyAddr;
-            if (freeAddr == _stream.Length)
+            if (freeAddr >= _stream.Length)
             {
-                _cb.EmptyAddr += block.ByteSize;
+                _cb.EmptyAddr += BlockByteSize;
             }
             else
             {
                 var free = (EmptyBlock)ReadBlock(_cb.EmptyAddr);
                 _cb.EmptyAddr = free.NextAddr;
             }
-            WriteBlock(block, freeAddr);
             WriteBlock(_cb, 0);
+            return freeAddr;
         }
 
-        private void WriteBlock(IBlock block, long addr)
+        //public long WriteBlock(IBlock block)
+        //{
+        //    if (block.Address == long.MinValue)
+        //    {
+        //        var freeAddr = _cb.EmptyAddr;
+        //        if (freeAddr == _stream.Length)
+        //        {
+        //            _cb.EmptyAddr += block.ByteSize;
+        //        }
+        //        else
+        //        {
+        //            var free = (EmptyBlock)ReadBlock(_cb.EmptyAddr);
+        //            _cb.EmptyAddr = free.NextAddr;
+        //        }
+        //        block.Address = freeAddr;
+        //        if (_cb.RootAddr == long.MinValue) _cb.RootAddr = freeAddr;
+        //        WriteBlock(_cb, 0);
+        //    }
+        //    WriteBlock(block, block.Address);
+        //    return block.Address;
+        //}
+
+        public void WriteBlock(IBlock block, long addr)
         {
             var buffer = block.GetBytes();
             _stream.Seek(addr, SeekOrigin.Begin);
             _stream.Write(buffer, 0, buffer.Length);
         }
 
+        public void SetRoot(long addr)
+        {
+            _cb.RootAddr = addr;
+            WriteBlock(_cb, 0);
+        }
+
         private IBlock InitBlock(byte[] buffer)
         {
             _blockType.FromBytes(buffer);
-            if (_blockType.Value == IndexBlock<TK>.Type) return new ControlBlock();
+            if (_blockType.Value == IndexBlock<TK>.Type) return new IndexBlock<TK>(BlockByteSize);
             if (_blockType.Value == DataBlock<TK, TV>.Type) return new DataBlock<TK, TV>(DataBlockRecordSize);
             if (_blockType.Value == EmptyBlock.Type) return new EmptyBlock();
             if (_blockType.Value == ControlBlock.Type) return new ControlBlock();
@@ -126,5 +155,18 @@ namespace BPlusTree.DataStructures
         }
 
         public void Dispose() => _stream.Dispose();
+
+        public void Print()
+        {
+            var address = 0;
+            while (address < _stream.Length)
+            {
+                var block = ReadBlock(address);
+                var str = block.ToString();
+                Console.WriteLine(str);
+                Console.WriteLine();
+                address += block.ByteSize;
+            }
+        }
     }
 }
