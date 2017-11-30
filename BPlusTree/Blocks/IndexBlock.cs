@@ -85,24 +85,13 @@ namespace BPlusTree.Blocks
 
         public long Find(TK key)
         {
-            var keys = _keys._items;
-            for (var i = 0; i < _keys.Count; i++)
+            var index = _keys.FindInsertionIndex(key);
+            var k = _keys._items[index];
+            if (k != null && key.CompareTo(k) == 0)
             {
-                var k = keys[i];
-                var cmp = key.CompareTo(k);
-                if (cmp < 0)
-                {
-                    return _children[i].Value;
-                } else if (cmp == 0)
-                {
-                    return _children[i + 1].Value;
-                }
-                else
-                {
-                    return _children[i - 1].Value;
-                }
+                return _children[index + 1].Value;
             }
-            return long.MinValue;
+            return _children[index].Value;
         }
 
         private int CalculateSize(int byteSize)
