@@ -9,34 +9,54 @@ namespace BPlusTree.Blocks
         public static char Type => 'D';
 
         public long Address { get; set; }
-        public int ByteSize => ByteUtils.ByteSize(_type, _nextBlock, _records);
+        public int ByteSize => ByteUtils.ByteSize(_type, _parent, _nextBlock, _records);
         public int MaxSize => _records.MaxSize;
+        public long Parent
+        {
+            get => _parent.Value;
+            set => _parent.Value = value;
+        }
+        private readonly WritableLong _parent = new WritableLong(long.MinValue);
         public long NextBlock
         {
             get => _nextBlock.Value;
             set => _nextBlock.Value = value;
         }
         private readonly WritableChar _type = new WritableChar(Type);
-        private readonly WritableLong _nextBlock = new WritableLong();
-        private readonly SortedArray<TK, TV> _records;
+        private readonly WritableLong _nextBlock = new WritableLong(long.MinValue);
+        private SortedBlock<TK, TV> _records;
 
         public DataBlock(int size)
         {
-            _records = new SortedArray<TK, TV>(size);
+            Address = long.MinValue;
+            _records = new SortedBlock<TK, TV>(size);
         }
 
-        public void Insert(TK key, TV value) => _records.Insert(key, value);
+        public DataBlock<TK, TV> Split(TK key, TV value, out TK middle)
+        {
+            var rightRecords = _records.Split(key, value, out middle);
+            var rightBlock = new DataBlock<TK, TV>(MaxSize)
+            {
+                _records = rightRecords,
+                NextBlock = NextBlock,
+                Parent = Parent
+            };
+            return rightBlock;
+        }
 
-        public TV Remove(TK key) => _records.Remove(key);
+        public bool IsFull() => _records.IsFull();
+
+        public void Insert(TK key, TV value) => _records.Insert(key, value);
 
         public TV Find(TK key) => _records.Find(key);
 
         public Tuple<TK, TV>[] ToKeyValueArray() => _records.ToKeyValueArray();
 
-        public byte[] GetBytes() => ByteUtils.Join(_type, _nextBlock, _records);
+        public byte[] GetBytes() => ByteUtils.Join(_type, _parent, _nextBlock, _records);
 
-        public void FromBytes(byte[] bytes, int index = 0) => ByteUtils.FromBytes(bytes, index + _type.ByteSize, _nextBlock, _records);
+        public void FromBytes(byte[] bytes, int index = 0) => ByteUtils.FromBytes(bytes, index + _type.ByteSize, _parent, _nextBlock, _records);
 
-        public override string ToString() => $"NextBlock: {_nextBlock}\nRecords: {_records}";
+        public override string ToString() => $"Type: {_type}\nByteSize: {ByteSize}\nParent: {_parent}\nAddress: {Address}\nNextBlock: {_nextBlock}\nRecords: {_records.Count}";
+        //public override string ToString() => $"NextBlock: {_nextBlock}\nRecords: {_records}";
     }
 }
