@@ -10,13 +10,7 @@ namespace BPlusTree.Blocks
 
         public long Address { get; set; }
         public int ByteSize { get; }
-        public long Parent
-        {
-            get => _parent.Value;
-            set => _parent.Value = value;
-        }
         private readonly WritableChar _type = new WritableChar(Type);
-        private readonly WritableLong _parent = new WritableLong(long.MinValue);
         public SortedIndex<TK> _keys;
         public readonly WritableArray<WritableLong> _children;
 
@@ -53,7 +47,6 @@ namespace BPlusTree.Blocks
             var rightKeys = _keys.Split(key, out middle);
             var rightBlock = new IndexBlock<TK>(ByteSize);
             rightBlock._keys = rightKeys;
-            rightBlock.Parent = Parent; // parent will be overriden... remove
 
             // split children addresses, split on index of middle element
             _children.Value = new WritableLong[_children.Value.Length];
@@ -102,16 +95,16 @@ namespace BPlusTree.Blocks
         private int CalculateSize(int byteSize)
         {
             var longSize = new WritableLong().ByteSize;
-            // subtract type, parent and extra address
-            var bytes = byteSize - (_type.ByteSize + longSize * 2);
+            // subtract type, extra address and count of keys
+            var bytes = byteSize - (_type.ByteSize + longSize + sizeof(int));
             // number of (key, address) pairs
             return bytes / (new TK().ByteSize + longSize);
         }
 
-        public byte[] GetBytes() => ByteUtils.Join(_type, _parent, _keys, _children);
+        public byte[] GetBytes() => ByteUtils.Join(ByteSize, _type, _keys, _children);
 
-        public void FromBytes(byte[] bytes, int index = 0) => ByteUtils.FromBytes(bytes, index + _type.ByteSize, _parent, _keys, _children);
+        public void FromBytes(byte[] bytes, int index = 0) => ByteUtils.FromBytes(bytes, index + _type.ByteSize, _keys, _children);
 
-        public override string ToString() => $"Type: {_type}\nByteSize: {ByteSize}\nParent: {_parent}\nAddress: {Address}\nKeys: {_keys.Count}";
+        public override string ToString() => $"Type: {_type}\nByteSize: {ByteSize}\nAddress: {Address}\nKeys: {_keys.Count}";
     }
 }

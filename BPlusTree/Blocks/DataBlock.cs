@@ -9,14 +9,8 @@ namespace BPlusTree.Blocks
         public static char Type => 'D';
 
         public long Address { get; set; }
-        public int ByteSize => ByteUtils.ByteSize(_type, _parent, _nextBlock, _records);
+        public int ByteSize => ByteUtils.ByteSize(_type, _nextBlock, _records);
         public int MaxSize => _records.MaxSize;
-        public long Parent
-        {
-            get => _parent.Value;
-            set => _parent.Value = value;
-        }
-        private readonly WritableLong _parent = new WritableLong(long.MinValue);
         public long NextBlock
         {
             get => _nextBlock.Value;
@@ -38,8 +32,7 @@ namespace BPlusTree.Blocks
             var rightBlock = new DataBlock<TK, TV>(MaxSize)
             {
                 _records = rightRecords,
-                NextBlock = NextBlock,
-                Parent = Parent
+                NextBlock = NextBlock
             };
             return rightBlock;
         }
@@ -52,11 +45,11 @@ namespace BPlusTree.Blocks
 
         public Tuple<TK, TV>[] ToKeyValueArray() => _records.ToKeyValueArray();
 
-        public byte[] GetBytes() => ByteUtils.Join(_type, _parent, _nextBlock, _records);
+        public byte[] GetBytes() => ByteUtils.Join(_type, _nextBlock, _records);
 
-        public void FromBytes(byte[] bytes, int index = 0) => ByteUtils.FromBytes(bytes, index + _type.ByteSize, _parent, _nextBlock, _records);
+        public void FromBytes(byte[] bytes, int index = 0) => ByteUtils.FromBytes(bytes, index + _type.ByteSize, _nextBlock, _records);
 
-        public override string ToString() => $"Type: {_type}\nByteSize: {ByteSize}\nParent: {_parent}\nAddress: {Address}\nNextBlock: {_nextBlock}\nRecords: {_records.Count}";
+        public override string ToString() => $"Type: {_type}\nByteSize: {ByteSize}\nAddress: {Address}\nNextBlock: {_nextBlock}\nRecords: {_records.Count}";
         //public override string ToString() => $"NextBlock: {_nextBlock}\nRecords: {_records}";
     }
 }

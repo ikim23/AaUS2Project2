@@ -42,5 +42,20 @@ namespace DataStructuresUnitTest
                 }
             }
         }
+
+        [TestMethod]
+        public void BlockSizeMatchTest()
+        {
+            for (var blockSize = 5; blockSize < 100; blockSize++)
+            {
+                var dataBlock = new DataBlock<WritableInt, WritableInt>(blockSize);
+                var indexBlock = new IndexBlock<WritableInt>(dataBlock.ByteSize);
+
+                Assert.AreEqual(dataBlock.ByteSize, indexBlock.ByteSize);
+                var dataBytes = dataBlock.GetBytes().Length;
+                var indexBytes = indexBlock.GetBytes().Length;
+                Assert.AreEqual(dataBytes, indexBytes, $"BlockSize: {blockSize} Data: {dataBytes} Index: {indexBytes}");
+            }
+        }
     }
 }

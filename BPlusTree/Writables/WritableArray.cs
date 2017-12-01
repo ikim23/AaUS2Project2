@@ -14,7 +14,7 @@ namespace BPlusTree.Writables
 
         public WritableArray(int size)
         {
-            ByteSize = sizeof(int) + size * new T().ByteSize;
+            ByteSize = size * new T().ByteSize;
             Value = new T[size];
         }
 
