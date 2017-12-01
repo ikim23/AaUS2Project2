@@ -17,8 +17,8 @@ namespace BPlusTree.Blocks
         }
         private readonly WritableChar _type = new WritableChar(Type);
         private readonly WritableLong _parent = new WritableLong(long.MinValue);
-        private SortedIndex<TK> _keys;
-        private readonly WritableArray<WritableLong> _children;
+        public SortedIndex<TK> _keys;
+        public readonly WritableArray<WritableLong> _children;
 
         public IndexBlock(int byteSize)
         {
@@ -45,8 +45,8 @@ namespace BPlusTree.Blocks
             var index = _keys.FindInsertionIndex(key);
             var dstIdx = index + 1;
             var children = new WritableLong[_children.Value.Length + 1];
-            Array.Copy(_children.Value, 0, children, 0, _children.Value.Length);
-            Array.Copy(_children.Value, index, children, dstIdx, _children.Value.Length - dstIdx);
+            Array.Copy(_children.Value, 0, children, 0, _children.Value.Length); // copy all data
+            Array.Copy(_children.Value, index, children, dstIdx, children.Length - dstIdx); // make room for new child
             children[index] = new WritableLong(leftChild);
             children[index + 1] = new WritableLong(rightChild);
 
@@ -55,10 +55,10 @@ namespace BPlusTree.Blocks
             rightBlock._keys = rightKeys;
             rightBlock.Parent = Parent; // parent will be overriden... remove
 
-            // split children addresses
-            // this.children are OK, copy to right sibling
-            Array.Copy(children, 0, _children.Value, 0, dstIdx - 1);
-            Array.Copy(children, dstIdx - 1, rightBlock._children.Value, 0, children.Length - (dstIdx - 1));
+            // split children addresses, split on index of middle element
+            _children.Value = new WritableLong[_children.Value.Length];
+            Array.Copy(children, 0, _children.Value, 0, _keys.Count + 1);
+            Array.Copy(children, _keys.Count + 1, rightBlock._children.Value, 0, children.Length - (_keys.Count + 1));
 
             return rightBlock;
         }
@@ -79,7 +79,12 @@ namespace BPlusTree.Blocks
         public long GetChildAddress(TK key)
         {
             var index = _keys.FindInsertionIndex(key);
-            //if (key.CompareTo(_keys._items[index]) == 0) return _children[index + 1].Value;
+            //var k = _keys._items[index];
+            //if (k != null && key.CompareTo(k) == 0)
+            //{
+            //    Console.WriteLine("baaa");
+            //    return _children[index + 1].Value;
+            //}
             return _children[index].Value;
         }
 

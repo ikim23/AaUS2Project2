@@ -87,5 +87,14 @@ namespace DataStructuresUnitTest
                 AssertPatients(b1Tuple.Item2, b2Tuple.Item2);
             }
         }
+
+        public static List<WritableInt> RandomUniqueList(Random rand, int count)
+        {
+            var list = new List<WritableInt>(count);
+            for (var i = 0; i < count; i++)
+                list.Add(new WritableInt(i));
+            list.Sort((i1, i2) => rand.Next());
+            return list;
+        }
     }
 }
