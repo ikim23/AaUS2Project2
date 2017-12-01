@@ -11,7 +11,7 @@ namespace BPlusTree.DataStructures
         public int ByteSize => sizeof(int) + MaxSize * (_items[0] != null ? _items[0] : new TK()).ByteSize;
         public int MaxSize { get; }
         public int Count { get; internal set; }
-        public readonly TK[] _items; // TODO: private
+        public TK[] _items; // TODO: private
 
         public SortedIndex(int size)
         {
@@ -30,7 +30,7 @@ namespace BPlusTree.DataStructures
         public TK Find(TK key)
         {
             var index = FindInsertionIndex(key);
-            if (!AreEqual(key, index)) throw new KeyNotFoundException();
+            if (!AreEqual(key, index)) throw new KeyNotFoundException($"key {key} not found");
             return _items[index];
         }
 
@@ -42,11 +42,18 @@ namespace BPlusTree.DataStructures
             middle = _items[midIndex];
             // skip items after middle
             Count = midIndex;
+
+            // clear _items
+            var items = new TK[_items.Length];
+            Array.Copy(_items, 0, items, 0, items.Length);
+            _items = new TK[_items.Length];
+            Array.Copy(items, 0, _items, 0, items.Length - midIndex + 1); // set back
+
             // copy items after middle
             var srcIdx = midIndex + 1;
             var rightSplit = new SortedIndex<TK>(MaxSize);
-            Array.Copy(_items, srcIdx, rightSplit._items, 0, _items.Length - srcIdx);
-            rightSplit.Count = _items.Length - srcIdx;
+            Array.Copy(items, srcIdx, rightSplit._items, 0, items.Length - srcIdx);
+            rightSplit.Count = items.Length - srcIdx;
             return rightSplit;
         }
 

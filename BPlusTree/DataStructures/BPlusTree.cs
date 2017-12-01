@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using BPlusTree.Blocks;
 using BPlusTree.Writables;
@@ -38,6 +39,63 @@ namespace BPlusTree.DataStructures
                 }
                 nextAddr = dataBlock.NextBlock;
             } while (nextAddr != long.MinValue);
+        }
+
+        public bool CheckInternalNodeOrder()
+        {
+            var block = _factory.GetRoot();
+            IndexBlock<TK> parentBlock = null;
+            while (block is IndexBlock<TK>)
+            {
+                parentBlock = (IndexBlock<TK>)block;
+                var childAddress = parentBlock.MinAddress();
+                block = _factory.ReadBlock(childAddress);
+            }
+
+            long nextAddr = block.Address;
+            do
+            {
+                DataBlock<TK, TV> dataBlock = (DataBlock<TK, TV>)_factory.ReadBlock(nextAddr);
+                var kv = dataBlock.ToKeyValueArray();
+                Console.WriteLine(string.Join(" ", kv.Select(i => i.Item1)));
+                nextAddr = dataBlock.NextBlock;
+            } while (nextAddr != long.MinValue);
+            return true;
+        }
+
+        public void Print()
+        {
+            using (var w = new StreamWriter(new FileStream("out.txt", FileMode.Create)))
+            {
+                var childrenOuter = new List<long>();
+                childrenOuter.Add(_factory.GetRoot().Address);
+                var children = new List<long>();
+                while (childrenOuter.Count > 0)
+                {
+                    var keysLine = "";
+                    var addressLine = "";
+                    foreach (var addr in childrenOuter)
+                    {
+                        var block = _factory.ReadBlock(addr);
+                        if (block is IndexBlock<TK>)
+                        {
+                            IndexBlock<TK> indexBlock = (IndexBlock<TK>)block;
+                            var addresses = string.Join(" ", indexBlock._children.Value.Take(indexBlock._keys.Count + 1).Select(v => v.Value));
+                            var keys = string.Join(" ", indexBlock._keys).PadRight(addresses.Length);
+                            keysLine += keys + " | ";
+                            addressLine += addresses + " | ";
+                            children.AddRange(indexBlock._children.Value.Take(indexBlock._keys.Count + 1)
+                                .Select(v => v.Value));
+                        }
+                        else return;
+                    }
+                    w.WriteLine(keysLine);
+                    w.WriteLine(addressLine);
+                    childrenOuter.Clear();
+                    childrenOuter.AddRange(children);
+                    children.Clear();
+                }
+            }
         }
 
         public TV Find(TK key)
@@ -102,7 +160,7 @@ namespace BPlusTree.DataStructures
                     _factory.WriteBlock(rightBlock, rightBlock.Address); // 0??
                     _factory.WriteBlock(parentBlock, parentBlock.Address);
                 }
-                else // parent full = split block
+                else // parent full = split index block prvej urovne
                 {
                     var leftIndex = parentBlock;
                     var rightIndex = leftIndex.Split(middleKey, out var middleParentKey, leftBlock.Address, rightBlock.Address); // split sets: parentAddress
@@ -166,10 +224,11 @@ namespace BPlusTree.DataStructures
                             }
                             else
                             {
-                                // parent je plny, = split
+                                // parent je plny, = split index block vyssej urovne (ma ako children indexy)
                                 var parentIndexLeft = parentIndex;
                                 var parentIndexRight = parentIndexLeft.Split(middleParentKey, out var newMiddle, leftIndex.Address, rightIndex.Address);
                                 parentIndexRight.Address = _factory.GetFreeAddress();
+
                                 // zisti parent addresu index blokov
                                 if (parentIndexRight.ContainsChild(leftIndex.Address)) // order is important!!
                                 {

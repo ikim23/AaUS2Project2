@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using BPlusTree.DataStructures;
 using BPlusTree.Writables;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -94,6 +96,44 @@ namespace DataStructuresUnitTest
                 Array.Copy(right, 0, joined, left.Length + 1, right.Length);
                 var expected = Enumerable.Range(0, i + 1).ToArray();
                 CollectionAssert.AreEqual(expected, joined);
+            }
+        }
+
+        [TestMethod]
+        public void InsertionIndexTest()
+        {
+            var size = 6;
+            for (var seed = 0; seed < 1_000_000; seed++)
+            {
+                var rand = new Random(seed);
+                var set = new HashSet<int>();
+                while (set.Count < size)
+                {
+                    set.Add(rand.Next());
+                }
+                var items = set.ToList();
+                var sortedIndex = new SortedIndex<WritableInt>(size);
+                foreach (var item in items)
+                {
+                    var itemToInsert = new WritableInt(item);
+                    var insertionIndex = sortedIndex.FindInsertionIndex(itemToInsert);
+                    var keys = sortedIndex._items;
+                    for (var i = 0; i < insertionIndex; i++)
+                    {
+                        Assert.IsTrue(keys[i].CompareTo(itemToInsert) < 0);
+                    }
+                    for (var i = insertionIndex; i < sortedIndex.Count; i++)
+                    {
+                        Assert.IsTrue(keys[i].CompareTo(itemToInsert) > 0);
+                    }
+                    sortedIndex.Insert(itemToInsert);
+                    Assert.AreEqual(itemToInsert.Value, sortedIndex._items[insertionIndex].Value);
+                }
+                var arr = sortedIndex._items;
+                for (var i = 0; i < size - 1; i++)
+                {
+                    Assert.IsTrue(arr[i].Value < arr[i + 1].Value);
+                }
             }
         }
     }
