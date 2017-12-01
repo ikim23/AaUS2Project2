@@ -10,6 +10,11 @@ namespace BPlusTree.Writables
         public static byte[] Join(params IWritable[] writables)
         {
             var size = ByteSize(writables);
+            return Join(size, writables);
+        }
+
+        public static byte[] Join(int size, params IWritable[] writables)
+        {
             var bytes = new byte[size];
             var dstIdx = 0;
             foreach (var w in writables)

@@ -49,6 +49,7 @@
     <Compile Include="Blocks\EmptyBlock.cs" />
     <Compile Include="Blocks\IBlock.cs" />
     <Compile Include="Blocks\IndexBlock.cs" />
+    <Compile Include="DataStructures\BPlusTree2.cs" />
     <Compile Include="DataStructures\SortedBlock.cs" />
     <Compile Include="DataStructures\SortedIndex.cs" />
     <Compile Include="DataStructures\SortedArray.cs" />
