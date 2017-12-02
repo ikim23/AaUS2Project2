@@ -1,4 +1,5 @@
-﻿using BPlusTree.Writables;
+﻿using System.Windows.Controls;
+using BPlusTree.Writables;
 
 namespace BPlusTree.Blocks
 {
@@ -7,6 +8,7 @@ namespace BPlusTree.Blocks
         public static char Type => 'C';
 
         public long Address { get; set; }
+
         public int ByteSize => ByteUtils.ByteSize(_type, _rootAddr, _emptyAddr);
         public long RootAddr
         {
@@ -21,7 +23,7 @@ namespace BPlusTree.Blocks
         private readonly WritableChar _type = new WritableChar(Type);
         private readonly WritableLong _rootAddr = new WritableLong();
         private readonly WritableLong _emptyAddr = new WritableLong();
-        
+
         public ControlBlock()
         {
             Address = 0;
@@ -34,5 +36,7 @@ namespace BPlusTree.Blocks
         public void FromBytes(byte[] bytes, int index = 0) => ByteUtils.FromBytes(bytes, index + _type.ByteSize, _rootAddr, _emptyAddr);
 
         public override string ToString() => $"Type: {Type} Addr: {Address} Empty: {EmptyAddr} Root: {RootAddr}";
+
+        public Grid CreateGrid() => UiUtils.CreateGrid(this);
     }
 }

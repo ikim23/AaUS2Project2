@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Windows.Controls;
+using System.Windows.Media;
 using BPlusTree.DataStructures;
 using BPlusTree.Writables;
 
@@ -90,5 +92,43 @@ namespace BPlusTree.Blocks
         public void FromBytes(byte[] bytes, int index = 0) => ByteUtils.FromBytes(bytes, index + _type.ByteSize, _keys, _children);
 
         public override string ToString() => $"Type: {Type} Addr: {Address}\nKeys: {_keys.Count}";
+
+        public Grid CreateGrid()
+        {
+            var grid = new Grid();
+            var colLeft = new ColumnDefinition();
+            var colRight = new ColumnDefinition();
+            grid.ColumnDefinitions.Add(colLeft);
+            grid.ColumnDefinitions.Add(colRight);
+            var colorSwaper = UiUtils.GetColor().GetEnumerator();
+            colorSwaper.MoveNext();
+            var rowIndex = 0;
+            UiUtils.AddGridRow(grid, rowIndex++, "Type:", Type, colorSwaper.Current);
+            UiUtils.AddGridRow(grid, rowIndex++, "ByteSize:", ByteSize, colorSwaper.Current);
+            UiUtils.AddGridRow(grid, rowIndex++, "Address:", Address, colorSwaper.Current);
+            UiUtils.AddGridRow(grid, rowIndex++, "Keys:", null, colorSwaper.Current);
+            var keyIndex = 0;
+            foreach (var key in _keys)
+            {
+                var keyType = key.GetType();
+                var keyProps = keyType.GetProperties();
+                colorSwaper.MoveNext();
+                UiUtils.AddGridRow(grid, rowIndex++, $"Key {keyIndex++}:", null, Colors.Transparent);
+                foreach (var prop in keyProps)
+                {
+                    var value = prop.GetValue(key);
+                    UiUtils.AddGridRow(grid, rowIndex++, prop.Name, value, colorSwaper.Current, 25);
+                }
+            }
+            colorSwaper.MoveNext();
+            UiUtils.AddGridRow(grid, rowIndex++, "Children Addresses:", null, Colors.Transparent);
+            for (var childIndex = 0; childIndex < _keys.Count + 1; childIndex++)
+            {
+                colorSwaper.MoveNext();
+                UiUtils.AddGridRow(grid, rowIndex++, $"Child {childIndex++}:", _children[childIndex].Value, colorSwaper.Current, 25);
+            }
+            colorSwaper.Dispose();
+            return grid;
+        }
     }
 }

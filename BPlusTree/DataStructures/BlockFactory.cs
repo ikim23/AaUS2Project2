@@ -5,7 +5,7 @@ using BPlusTree.Writables;
 
 namespace BPlusTree.DataStructures
 {
-    public class BlockFactory<TK, TV> : IDisposable where TK : IComparable<TK>, IWritable, new() where TV : IWritable, new()
+    public class BlockFactory<TK, TV> : IBlockFactory where TK : IComparable<TK>, IWritable, new() where TV : IWritable, new()
     {
         public int BlockByteSize { get; }
         public int DataBlockRecordSize { get; }
@@ -108,29 +108,7 @@ namespace BPlusTree.DataStructures
             WriteBlock(_cb);
             return freeAddr;
         }
-
-        //public long WriteBlock(IBlock block)
-        //{
-        //    if (block.Address == long.MinValue)
-        //    {
-        //        var freeAddr = _cb.EmptyAddr;
-        //        if (freeAddr == _stream.Length)
-        //        {
-        //            _cb.EmptyAddr += block.ByteSize;
-        //        }
-        //        else
-        //        {
-        //            var free = (EmptyBlock)ReadBlock(_cb.EmptyAddr);
-        //            _cb.EmptyAddr = free.NextAddr;
-        //        }
-        //        block.Address = freeAddr;
-        //        if (_cb.RootAddr == long.MinValue) _cb.RootAddr = freeAddr;
-        //        WriteBlock(_cb, 0);
-        //    }
-        //    WriteBlock(block, block.Address);
-        //    return block.Address;
-        //}
-
+        
         public void WriteBlock(IBlock block)
         {
             var buffer = block.GetBytes();
@@ -143,6 +121,8 @@ namespace BPlusTree.DataStructures
             _cb.RootAddr = addr;
             WriteBlock(_cb);
         }
+
+        public long Length() => _stream.Length;
 
         private IBlock InitBlock(byte[] buffer)
         {

@@ -1,0 +1,77 @@
+﻿<Window x:Class="BPlusTreeVisualizer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="B+ Tree Visualizer" Height="600" Width="700">
+    <Grid>
+        <Grid.Resources>
+            <Style x:Key="Margin"  TargetType="{x:Type Control}">
+                <Setter Property="Margin" Value="5" />
+                <Setter Property="Padding" Value="5" />
+            </Style>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0"
+               Style="{StaticResource Margin}">Key Class:</Label>
+        <ComboBox Grid.Row="0" Grid.Column="1"
+                  Style="{StaticResource Margin}"
+                  Name="KeyCombo"/>
+
+        <Label Grid.Row="0" Grid.Column="2"
+               Style="{StaticResource Margin}">File:</Label>
+        <TextBox Grid.Row="0" Grid.Column="3"
+                 Style="{StaticResource Margin}"
+                 Name="FileText"/>
+
+        <Label Grid.Row="1" Grid.Column="0"
+               Style="{StaticResource Margin}">Value Class:</Label>
+        <ComboBox Grid.Row="1" Grid.Column="1"
+                  Style="{StaticResource Margin}"
+                  Name="ValueCombo"/>
+
+        <Label Grid.Row="1" Grid.Column="2"
+               Style="{StaticResource Margin}">Block Size:</Label>
+        <TextBox Grid.Row="1" Grid.Column="3"
+                 Style="{StaticResource Margin}"
+                 Name="BlockSizeText"/>
+
+        <Label Grid.Row="2" Grid.Column="0"
+               Style="{StaticResource Margin}">Block Index:</Label>
+        <Label Grid.Row="2" Grid.Column="1"
+               Style="{StaticResource Margin}"
+               Name="BlockIndex"/>
+
+        <StackPanel Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right">
+            <Button Style="{StaticResource Margin}"
+                    Name="OpenBtn"
+                    Click="OpenClick">Open</Button>
+            <Button Style="{StaticResource Margin}"
+                    IsEnabled="False"
+                    Name="PrevBtn"
+                    Click="PrevClick">Previous</Button>
+            <Button Style="{StaticResource Margin}"
+                    IsEnabled="False"
+                    Name="NextBtn"
+                    Click="NextClick">Next</Button>
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4"
+                      Name="Panel"/>
+    </Grid>
+</Window>
