@@ -29,6 +29,6 @@ namespace BPlusTree
 
         public void FromBytes(byte[] bytes, int index = 0) => ByteUtils.FromBytes(bytes, index, _start, _end, _diagnosis);
 
-        public override string ToString() => $"\nStart: {_start},\nEnd: {_end},\nDiagnosis: {_diagnosis}";
+        public override string ToString() => $"Start: {_start} End: {_end} Diagnosis: {_diagnosis}";
     }
 }

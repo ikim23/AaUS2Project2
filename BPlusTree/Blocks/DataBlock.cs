@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using BPlusTree.DataStructures;
 using BPlusTree.Writables;
 
 namespace BPlusTree.Blocks
 {
-    public class DataBlock<TK, TV> : IBlock where TK : IComparable<TK>, IWritable, new() where TV : IWritable, new()
+    public class DataBlock<TK, TV> : IBlock, IEnumerable<TV> where TK : IComparable<TK>, IWritable, new() where TV : IWritable, new()
     {
         public static char Type => 'D';
 
@@ -43,13 +45,14 @@ namespace BPlusTree.Blocks
 
         public TV Find(TK key) => _records.Find(key);
 
-        public Tuple<TK, TV>[] ToKeyValueArray() => _records.ToKeyValueArray();
-
         public byte[] GetBytes() => ByteUtils.Join(_type, _nextBlock, _records);
 
         public void FromBytes(byte[] bytes, int index = 0) => ByteUtils.FromBytes(bytes, index + _type.ByteSize, _nextBlock, _records);
 
-        public override string ToString() => $"Type: {_type}\nByteSize: {ByteSize}\nAddress: {Address}\nNextBlock: {_nextBlock}\nRecords: {_records.Count}";
-        //public override string ToString() => $"NextBlock: {_nextBlock}\nRecords: {_records}";
+        public IEnumerator<TV> GetEnumerator() => _records.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        public override string ToString() => $"Type: {Type} Addr: {Address} Next: {NextBlock} Records: {_records.Count}";
     }
 }

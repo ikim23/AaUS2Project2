@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using BPlusTree;
 using BPlusTree.DataStructures;
 using BPlusTree.Writables;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -26,7 +27,7 @@ namespace DataStructuresUnitTest
                 Assert.AreEqual(value, val.Value);
                 value++;
             }
-            // test if in orted match
+            // test if in order match
             var expected = Enumerable.Range(0, numInsertions).ToList();
             var returned = tree.InOrder().Select(e => e.Value).ToList();
             Assert.AreEqual(expected.Count, returned.Count);
@@ -44,7 +45,7 @@ namespace DataStructuresUnitTest
         [TestMethod]
         public void RandomInsertTest()
         {
-            var reps = 100;
+            var reps = 10;
             var numInsertions = 10_000;
             for (var rep = 0; rep < reps; rep++)
             {
@@ -58,9 +59,9 @@ namespace DataStructuresUnitTest
                     var item = items[index];
                     tree.Insert(item, item);
                     //// check in order values
-                    //var expected = items.Take(index + 1).Select(node => node.Value).ToList();
+                    //var expected = items.Take(index + 1).Select(e => e.Value).ToList();
                     //expected.Sort();
-                    //var returned = tree.InOrder().Select(node => node.Value).ToList();
+                    //var returned = tree.InOrder().Select(e => e.Value).ToList();
                     //Assert.AreEqual(expected.Count, returned.Count);
                     //CollectionAssert.AreEqual(expected, returned);
                     //// find all inserted values
@@ -71,12 +72,14 @@ namespace DataStructuresUnitTest
                     //    Assert.AreEqual(searchFor.Value, found.Value);
                     //}
                 }
-                // test if in orted match
+                // test if in order match
                 var expected = items.Select(e => e.Value).ToList();
                 expected.Sort();
                 var returned = tree.InOrder().Select(e => e.Value).ToList();
                 Assert.AreEqual(expected.Count, returned.Count);
-                CollectionAssert.AreEqual(expected, returned);
+                CollectionAssert.AreEqual(expected, returned, $@"
+                Expected: {string.Join(",", expected)}
+                Returned: {string.Join(",", returned)}");
                 // test find for every item
                 foreach (var item in expected)
                 {
@@ -86,6 +89,38 @@ namespace DataStructuresUnitTest
                 tree.Dispose();
                 File.Delete(testFile);
             }
+        }
+
+        [TestMethod]
+        public void PatientInsertTest()
+        {
+            var blockSize = 8;
+            var numInsertions = 1_000;
+            var rand = new Random(100);
+            var patients = Utils.RandomUniquePatients(rand, numInsertions);
+            var testFile = $"{DateTime.Now.Ticks}.bin";
+            var tree = new BPlusTree<WritableInt, Patient>(blockSize, testFile);
+            for (var index = 0; index < patients.Count; index++)
+            {
+                var patient = patients[index];
+                tree.Insert(new WritableInt(patient.CardId), patient);
+            }
+            // test if in order match
+            var expected = patients.Select(p => p.CardId).ToList();
+            expected.Sort();
+            var returned = tree.InOrder().Select(p => p.CardId).ToList();
+            Assert.AreEqual(expected.Count, returned.Count);
+            CollectionAssert.AreEqual(expected, returned, $@"
+                Expected: {string.Join(",", expected)}
+                Returned: {string.Join(",", returned)}");
+            // test find for every item
+            foreach (var expectedPatient in patients)
+            {
+                var foundPatient = tree.Find(new WritableInt(expectedPatient.CardId));
+                Utils.AssertPatients(expectedPatient, foundPatient);
+            }
+            tree.Dispose();
+            File.Delete(testFile);
         }
     }
 }

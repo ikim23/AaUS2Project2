@@ -24,6 +24,7 @@ namespace BPlusTree.Blocks
         
         public ControlBlock()
         {
+            Address = 0;
             RootAddr = long.MinValue;
             EmptyAddr = ByteSize;
         }
@@ -32,6 +33,6 @@ namespace BPlusTree.Blocks
 
         public void FromBytes(byte[] bytes, int index = 0) => ByteUtils.FromBytes(bytes, index + _type.ByteSize, _rootAddr, _emptyAddr);
 
-        public override string ToString() => $"Type: {Type}\nByteSize: {ByteSize}\nAddress: {Address}\nEmpty: {EmptyAddr}\nRoot: {RootAddr}";
+        public override string ToString() => $"Type: {Type} Addr: {Address} Empty: {EmptyAddr} Root: {RootAddr}";
     }
 }

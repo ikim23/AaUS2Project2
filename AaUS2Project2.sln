@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BPlusTree", "BPlusTree\BPlu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataStructuresUnitTest", "DataStructuresUnitTest\DataStructuresUnitTest.csproj", "{B7F939B4-5140-4DB0-89E2-ECDD67C32876}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreePrinter", "TreePrinter\TreePrinter.csproj", "{B30DEE06-B9B5-4A8F-AAB1-7BA7A4AFFAEF}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{B7F939B4-5140-4DB0-89E2-ECDD67C32876}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7F939B4-5140-4DB0-89E2-ECDD67C32876}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7F939B4-5140-4DB0-89E2-ECDD67C32876}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B30DEE06-B9B5-4A8F-AAB1-7BA7A4AFFAEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B30DEE06-B9B5-4A8F-AAB1-7BA7A4AFFAEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B30DEE06-B9B5-4A8F-AAB1-7BA7A4AFFAEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B30DEE06-B9B5-4A8F-AAB1-7BA7A4AFFAEF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

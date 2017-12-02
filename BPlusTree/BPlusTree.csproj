@@ -49,13 +49,11 @@
     <Compile Include="Blocks\EmptyBlock.cs" />
     <Compile Include="Blocks\IBlock.cs" />
     <Compile Include="Blocks\IndexBlock.cs" />
-    <Compile Include="DataStructures\BPlusTree2.cs" />
     <Compile Include="DataStructures\SortedBlock.cs" />
     <Compile Include="DataStructures\SortedIndex.cs" />
-    <Compile Include="DataStructures\SortedArray.cs" />
-    <Compile Include="StringUtils.cs" />
     <Compile Include="Writables\ByteUtils.cs" />
     <Compile Include="Writables\WritableArray.cs" />
+    <Compile Include="Writables\WritableCollection.cs" />
     <Compile Include="Writables\WritableChar.cs" />
     <Compile Include="Writables\WritableDateTime.cs" />
     <Compile Include="Writables\WritableInt.cs" />

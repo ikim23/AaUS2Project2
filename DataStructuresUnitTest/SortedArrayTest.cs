@@ -117,7 +117,7 @@ namespace DataStructuresUnitTest
                 {
                     var itemToInsert = new WritableInt(item);
                     var insertionIndex = sortedIndex.FindInsertionIndex(itemToInsert);
-                    var keys = sortedIndex._items;
+                    var keys = sortedIndex.Items;
                     for (var i = 0; i < insertionIndex; i++)
                     {
                         Assert.IsTrue(keys[i].CompareTo(itemToInsert) < 0);
@@ -127,9 +127,9 @@ namespace DataStructuresUnitTest
                         Assert.IsTrue(keys[i].CompareTo(itemToInsert) > 0);
                     }
                     sortedIndex.Insert(itemToInsert);
-                    Assert.AreEqual(itemToInsert.Value, sortedIndex._items[insertionIndex].Value);
+                    Assert.AreEqual(itemToInsert.Value, sortedIndex.Items[insertionIndex].Value);
                 }
-                var arr = sortedIndex._items;
+                var arr = sortedIndex.Items;
                 for (var i = 0; i < size - 1; i++)
                 {
                     Assert.IsTrue(arr[i].Value < arr[i + 1].Value);

@@ -8,15 +8,15 @@ namespace BPlusTree.DataStructures
 {
     public class SortedIndex<TK> : IEnumerable<TK>, IWritable where TK : IComparable<TK>, IWritable, new()
     {
-        public int ByteSize => sizeof(int) + MaxSize * (_items[0] != null ? _items[0] : new TK()).ByteSize;
+        public int ByteSize => sizeof(int) + MaxSize * (Items[0] != null ? Items[0] : new TK()).ByteSize;
         public int MaxSize { get; }
         public int Count { get; internal set; }
-        public TK[] _items; // TODO: private
+        public readonly TK[] Items;
 
         public SortedIndex(int size)
         {
             MaxSize = size;
-            _items = new TK[size + 1];
+            Items = new TK[size + 1];
         }
 
         public bool IsFull() => Count >= MaxSize;
@@ -30,8 +30,8 @@ namespace BPlusTree.DataStructures
         public TK Find(TK key)
         {
             var index = FindInsertionIndex(key);
-            if (!AreEqual(key, index)) throw new KeyNotFoundException($"key {key} not found");
-            return _items[index];
+            if (!AreEqual(key, index)) throw new KeyNotFoundException($"Key {key} not found");
+            return Items[index];
         }
 
         public SortedIndex<TK> Split(TK key, out TK middle)
@@ -39,21 +39,14 @@ namespace BPlusTree.DataStructures
             if (!IsFull()) throw new ArgumentException($"Only {nameof(SortedIndex<TK>)} with full capacity can be splitted");
             InsertWithoutCountCheck(key);
             var midIndex = Count / 2;
-            middle = _items[midIndex];
+            middle = Items[midIndex];
             // skip items after middle
             Count = midIndex;
-
-            // clear _items
-            var items = new TK[_items.Length];
-            Array.Copy(_items, 0, items, 0, items.Length);
-            _items = new TK[_items.Length];
-            Array.Copy(items, 0, _items, 0, items.Length - midIndex + 1); // set back
-
-            // copy items after middle
+            // copy items after middle to right split
             var srcIdx = midIndex + 1;
             var rightSplit = new SortedIndex<TK>(MaxSize);
-            Array.Copy(items, srcIdx, rightSplit._items, 0, items.Length - srcIdx);
-            rightSplit.Count = items.Length - srcIdx;
+            rightSplit.Count = Items.Length - srcIdx;
+            Array.Copy(Items, srcIdx, rightSplit.Items, 0, rightSplit.Count);
             return rightSplit;
         }
 
@@ -67,8 +60,8 @@ namespace BPlusTree.DataStructures
         {
             var index = FindInsertionIndex(key);
             if (AreEqual(key, index)) throw new ArgumentException($"Item {key} is already inserted");
-            Array.Copy(_items, index, _items, index + 1, Count - index);
-            _items[index] = key;
+            Array.Copy(Items, index, Items, index + 1, Count - index);
+            Items[index] = key;
             Count++;
         }
 
@@ -76,8 +69,8 @@ namespace BPlusTree.DataStructures
         {
             var index = FindInsertionIndex(key);
             if (!AreEqual(key, index)) throw new KeyNotFoundException();
-            var value = _items[index];
-            Array.Copy(_items, index + 1, _items, index, Count - (index + 1));
+            var value = Items[index];
+            Array.Copy(Items, index + 1, Items, index, Count - (index + 1));
             Count--;
             return value;
         }
@@ -89,7 +82,7 @@ namespace BPlusTree.DataStructures
             while (lowerBound <= upperBound)
             {
                 var index = lowerBound + (upperBound - lowerBound) / 2;
-                var cmp = key.CompareTo(_items[index]);
+                var cmp = key.CompareTo(Items[index]);
                 if (cmp < 0) upperBound = index - 1;
                 else if (cmp > 0) lowerBound = index + 1;
                 else return index;
@@ -100,7 +93,7 @@ namespace BPlusTree.DataStructures
         private bool AreEqual(TK key, int itemOnIndex)
         {
             if (itemOnIndex >= MaxSize) return false;
-            var item = _items[itemOnIndex];
+            var item = Items[itemOnIndex];
             return item != null && key.CompareTo(item) == 0;
         }
 
@@ -111,7 +104,7 @@ namespace BPlusTree.DataStructures
             Array.Copy(BitConverter.GetBytes(Count), 0, bytes, 0, dstIdx);
             for (var i = 0; i < Count; i++)
             {
-                var item = _items[i];
+                var item = Items[i];
                 Array.Copy(item.GetBytes(), 0, bytes, dstIdx, item.ByteSize);
                 dstIdx += item.ByteSize;
             }
@@ -124,19 +117,17 @@ namespace BPlusTree.DataStructures
             var srcIdx = index + sizeof(int);
             for (var i = 0; i < Count; i++)
             {
-                var item = _items[i] != null ? _items[0] : new TK();
+                var item = Items[i] != null ? Items[0] : new TK();
                 item.FromBytes(bytes, srcIdx);
-                _items[i] = item;
+                Items[i] = item;
                 srcIdx += item.ByteSize;
             }
         }
 
-        public TK[] ToArray() => _items.Take(Count).ToArray();
-
-        public IEnumerator<TK> GetEnumerator() => _items.Take(Count).GetEnumerator();
+        public IEnumerator<TK> GetEnumerator() => Items.Take(Count).GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        public override string ToString() => $"\n{string.Join(",\n", _items.Take(Count))}";
+        public override string ToString() => string.Join(",", this);
     }
 }

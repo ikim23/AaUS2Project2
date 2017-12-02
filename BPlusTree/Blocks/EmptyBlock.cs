@@ -30,6 +30,6 @@ namespace BPlusTree.Blocks
 
         public void FromBytes(byte[] bytes, int index = 0) => ByteUtils.FromBytes(bytes, index + _type.ByteSize, _prevEmptyBlock, _nextEmptyBlock);
 
-        public override string ToString() => $"Type: {Type}\nByteSize: {ByteSize}\nAddress: {Address}\nPrev: {PrevAddr}\nNext: {NextAddr}";
+        public override string ToString() => $"Type: {Type} Addr: {Address} Prev: {PrevAddr} Next: {NextAddr}";
     }
 }

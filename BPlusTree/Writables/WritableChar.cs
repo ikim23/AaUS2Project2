@@ -2,7 +2,7 @@
 
 namespace BPlusTree.Writables
 {
-    public class WritableChar : IWritable
+    public class WritableChar : IComparable<WritableChar>, IWritable
     {
         public int ByteSize => sizeof(char);
         public char Value { get; set; }
@@ -22,6 +22,8 @@ namespace BPlusTree.Writables
         {
             Value = BitConverter.ToChar(bytes, index);
         }
+
+        public int CompareTo(WritableChar other) => Value.CompareTo(other.Value);
 
         public override string ToString() => Value.ToString();
     }

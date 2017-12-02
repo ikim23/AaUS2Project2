@@ -11,8 +11,8 @@ namespace BPlusTree.Blocks
         public long Address { get; set; }
         public int ByteSize { get; }
         private readonly WritableChar _type = new WritableChar(Type);
-        public SortedIndex<TK> _keys;
-        public readonly WritableArray<WritableLong> _children;
+        private SortedIndex<TK> _keys;
+        private readonly WritableArray<WritableLong> _children;
 
         public IndexBlock(int byteSize)
         {
@@ -31,73 +31,57 @@ namespace BPlusTree.Blocks
             var dstIdx = index + 1;
             Array.Copy(_children.Value, index, _children.Value, dstIdx, _children.Value.Length - dstIdx);
             _children[index] = new WritableLong(leftChild);
-            _children[index + 1] = new WritableLong(rightChild);
+            _children[dstIdx] = new WritableLong(rightChild);
         }
 
         public IndexBlock<TK> Split(TK key, out TK middle, long leftChild, long rightChild)
         {
             var index = _keys.FindInsertionIndex(key);
             var dstIdx = index + 1;
-            var children = new WritableLong[_children.Value.Length + 1];
-            Array.Copy(_children.Value, 0, children, 0, _children.Value.Length); // copy all data
-            Array.Copy(_children.Value, index, children, dstIdx, children.Length - dstIdx); // make room for new child
-            children[index] = new WritableLong(leftChild);
-            children[index + 1] = new WritableLong(rightChild);
+
+            var splitArray = new WritableLong[_children.Value.Length + 1];
+            Array.Copy(_children.Value, 0, splitArray, 0, _children.Value.Length);
+            Array.Copy(_children.Value, index, splitArray, dstIdx, splitArray.Length - dstIdx);
+            splitArray[index] = new WritableLong(leftChild);
+            splitArray[dstIdx] = new WritableLong(rightChild);
 
             var rightKeys = _keys.Split(key, out middle);
             var rightBlock = new IndexBlock<TK>(ByteSize);
             rightBlock._keys = rightKeys;
 
-            // split children addresses, split on index of middle element
+            // split children addresses on index of middle element
             _children.Value = new WritableLong[_children.Value.Length];
-            Array.Copy(children, 0, _children.Value, 0, _keys.Count + 1);
-            Array.Copy(children, _keys.Count + 1, rightBlock._children.Value, 0, children.Length - (_keys.Count + 1));
+            Array.Copy(splitArray, 0, _children.Value, 0, _keys.Count + 1);
+            Array.Copy(splitArray, _keys.Count + 1, rightBlock._children.Value, 0, splitArray.Length - (_keys.Count + 1));
 
             return rightBlock;
         }
 
-        public bool ContainsChild(long address)
-        {
-            WritableLong child;
-            for (var i = 0; i < _children.Value.Length && (child = _children[i]) != null; i++)
-                if (child.Value == address) return true;
-            return false;
-        }
-
-        public long MinAddress()
-        {
-            return _children[0].Value;
-        }
+        public long MinAddress() => _children[0].Value;
 
         public long GetChildAddress(TK key)
         {
             var index = _keys.FindInsertionIndex(key);
-            //var k = _keys._items[index];
-            //if (k != null && key.CompareTo(k) == 0)
-            //{
-            //    Console.WriteLine("baaa");
-            //    return _children[index + 1].Value;
-            //}
             return _children[index].Value;
         }
 
         public long Find(TK key)
         {
             var index = _keys.FindInsertionIndex(key);
-            var k = _keys._items[index];
+            var k = _keys.Items[index];
             if (k != null && key.CompareTo(k) == 0)
-            {
                 return _children[index + 1].Value;
-            }
             return _children[index].Value;
         }
 
         private int CalculateSize(int byteSize)
         {
             var longSize = new WritableLong().ByteSize;
-            // subtract type, extra address and count of keys
-            var bytes = byteSize - (_type.ByteSize + longSize + sizeof(int));
-            // number of (key, address) pairs
+            // subtract:
+            // - Type
+            // - extra address for last children (_children)
+            // - 2x Count for WritableArray (_keys, _children)
+            var bytes = byteSize - (_type.ByteSize + longSize + sizeof(int) * 2);
             return bytes / (new TK().ByteSize + longSize);
         }
 
@@ -105,6 +89,6 @@ namespace BPlusTree.Blocks
 
         public void FromBytes(byte[] bytes, int index = 0) => ByteUtils.FromBytes(bytes, index + _type.ByteSize, _keys, _children);
 
-        public override string ToString() => $"Type: {_type}\nByteSize: {ByteSize}\nAddress: {Address}\nKeys: {_keys.Count}";
+        public override string ToString() => $"Type: {Type} Addr: {Address}\nKeys: {_keys.Count}";
     }
 }

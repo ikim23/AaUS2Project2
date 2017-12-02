@@ -37,10 +37,8 @@ namespace BPlusTree.DataStructures
         {
             var item = new SortedBlockItem<TK, TV>(key, value);
             var rightSplit = _items.Split(item, out var middleTuple);
-            var rightBlock = new SortedBlock<TK, TV>(MaxSize)
-            {
-                _items = rightSplit
-            };
+            var rightBlock = new SortedBlock<TK, TV>(MaxSize);
+            rightBlock._items = rightSplit;
             rightBlock.Insert(middleTuple.Key, middleTuple.Value);
             middle = middleTuple.Key;
             return rightBlock;
@@ -69,15 +67,11 @@ namespace BPlusTree.DataStructures
 
         public void FromBytes(byte[] bytes, int index = 0) => _items.FromBytes(bytes, index);
 
-        public TV[] ToArray() => _items.Select(i => i.Value).Take(Count).ToArray();
-
-        public Tuple<TK, TV>[] ToKeyValueArray() => _items.Select(i => new Tuple<TK, TV>(i.Key, i.Value)).Take(Count).ToArray();
-
         public IEnumerator<TV> GetEnumerator() => _items.Select(i => i.Value).GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        public override string ToString() => $"\n{string.Join(",\n", _items.Take(Count))}";
+        public override string ToString() => string.Join(",", this);
     }
 
     internal class SortedBlockItem<TK, TV> : IComparable<SortedBlockItem<TK, TV>>, IWritable where TK : IComparable<TK>, IWritable, new() where TV : IWritable, new()
@@ -102,6 +96,6 @@ namespace BPlusTree.DataStructures
 
         public void FromBytes(byte[] bytes, int index = 0) => ByteUtils.FromBytes(bytes, index, Key, Value);
 
-        public override string ToString() => StringUtils.PadArrayItem($"Key: {Key},\nValue: {StringUtils.Pad(Value.ToString())}");
+        public override string ToString() => Key.ToString();
     }
 }

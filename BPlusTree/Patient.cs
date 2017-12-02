@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using BPlusTree.DataStructures;
 using BPlusTree.Writables;
 
 namespace BPlusTree
@@ -29,7 +27,7 @@ namespace BPlusTree
             get => _cardId.Value;
             set => _cardId.Value = value;
         }
-        public SortedArray<WritableDateTime, Hospitalization> Hospitalizations { get; }
+        public WritableCollection<Hospitalization> Hospitalizations { get; }
         private readonly WritableString _firstName = new WritableString(25);
         private readonly WritableString _lastName = new WritableString(25);
         private readonly WritableDateTime _birthday = new WritableDateTime();
@@ -37,14 +35,13 @@ namespace BPlusTree
 
         public Patient()
         {
-            Hospitalizations = new SortedArray<WritableDateTime, Hospitalization>(100);
+            Hospitalizations = new WritableCollection<Hospitalization>(100);
         }
 
         public byte[] GetBytes() => ByteUtils.Join(_firstName, _lastName, _birthday, _cardId, Hospitalizations);
 
         public void FromBytes(byte[] bytes, int index = 0) => ByteUtils.FromBytes(bytes, index, _firstName, _lastName, _birthday, _cardId, Hospitalizations);
 
-        public override string ToString() => $"\nFirstName: {_firstName},\nLastName: {_lastName},\nBirthday: {_birthday},\nCardId: {_cardId},\nHospitalizations: {Hospitalizations}";
-
+        public override string ToString() => $"FirstName: {_firstName} LastName: {_lastName} Birthday: {_birthday} CardId: {_cardId}";
     }
 }

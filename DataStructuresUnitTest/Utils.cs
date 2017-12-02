@@ -33,10 +33,9 @@ namespace DataStructuresUnitTest
                 CardId = random.Next()
             };
             var numHospitalizations = random.Next(10, 100);
-            var date = RandomDateTime(random);
             for (var i = 0; i < numHospitalizations; i++)
             {
-                patient.Hospitalizations.Insert(new WritableDateTime(date.AddDays(i)), new Hospitalization
+                patient.Hospitalizations.Add(new Hospitalization
                 {
                     Start = RandomDateTime(random),
                     End = RandomDateTime(random),
@@ -52,8 +51,8 @@ namespace DataStructuresUnitTest
             Assert.AreEqual(p1.LastName, p2.LastName);
             Assert.AreEqual(p1.Birthday, p2.Birthday);
             Assert.AreEqual(p1.CardId, p2.CardId);
-            var p1Hospitalizations = p1.Hospitalizations.ToArray();
-            var p2Hospitalizations = p2.Hospitalizations.ToArray();
+            var p1Hospitalizations = p1.Hospitalizations.Where(hosp => hosp != null).ToArray();
+            var p2Hospitalizations = p2.Hospitalizations.Where(hosp => hosp != null).ToArray();
             Assert.AreEqual(p1Hospitalizations.Length, p2Hospitalizations.Length);
             for (var i = 0; i < p1Hospitalizations.Length; i++)
             {
@@ -76,15 +75,14 @@ namespace DataStructuresUnitTest
 
         public static void AssertDataBlocks(DataBlock<WritableInt, Patient> b1, DataBlock<WritableInt, Patient> b2)
         {
-            var b1KeyVals = b1.ToKeyValueArray();
-            var b2KeyVals = b2.ToKeyValueArray();
-            Assert.AreEqual(b1KeyVals.Length, b2KeyVals.Length);
-            for (var i = 0; i < b1KeyVals.Length; i++)
+            var b1Patients = b1.ToArray();
+            var b2Patients = b2.ToArray();
+            Assert.AreEqual(b1Patients.Length, b2Patients.Length);
+            for (var i = 0; i < b1Patients.Length; i++)
             {
-                var b1Tuple = b1KeyVals[i];
-                var b2Tuple = b2KeyVals[i];
-                Assert.AreEqual(b1Tuple.Item1.Value, b2Tuple.Item1.Value);
-                AssertPatients(b1Tuple.Item2, b2Tuple.Item2);
+                var p1 = b1Patients[i];
+                var p2 = b2Patients[i];
+                AssertPatients(p1, p2);
             }
         }
 
@@ -93,6 +91,19 @@ namespace DataStructuresUnitTest
             var list = new List<WritableInt>(count);
             for (var i = 0; i < count; i++)
                 list.Add(new WritableInt(i));
+            list.Sort((i1, i2) => rand.Next());
+            return list;
+        }
+
+        public static List<Patient> RandomUniquePatients(Random rand, int count)
+        {
+            var list = new List<Patient>(count);
+            for (var i = 0; i < count; i++)
+            {
+                var patient = RandomPatient(rand);
+                patient.CardId = i;
+                list.Add(patient);
+            }
             list.Sort((i1, i2) => rand.Next());
             return list;
         }
