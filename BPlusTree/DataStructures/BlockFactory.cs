@@ -21,7 +21,7 @@ namespace BPlusTree.DataStructures
             _buffer = new byte[BlockByteSize];
             var exists = File.Exists(file);
             _stream = new FileStream(file, FileMode.OpenOrCreate);
-            if (!exists) WriteBlock(_cb, 0);
+            if (!exists) WriteBlock(_cb);
             else _cb = (ControlBlock)ReadBlock();
         }
 
@@ -44,19 +44,19 @@ namespace BPlusTree.DataStructures
                     if (lastFree.PrevAddr == long.MinValue)
                     { // no more empty blocks, new blocks will be appended to end
                         _cb.EmptyAddr = lastAddress;
-                        WriteBlock(_cb, 0);
+                        WriteBlock(_cb);
                     }
                     else
                     {
                         var prev = (EmptyBlock)ReadBlock(lastFree.PrevAddr);
                         prev.NextAddr = lastFree.NextAddr;
-                        WriteBlock(prev, prev.Address);
+                        WriteBlock(prev);
                     }
                     if (lastFree.NextAddr != long.MinValue)
                     {
                         var next = (EmptyBlock)ReadBlock(lastFree.NextAddr);
                         next.PrevAddr = lastFree.PrevAddr;
-                        WriteBlock(next, next.Address);
+                        WriteBlock(next);
                     }
                     _stream.SetLength(lastAddress);
                     lastAddress -= _buffer.Length;
@@ -75,10 +75,10 @@ namespace BPlusTree.DataStructures
                     free.PrevAddr = newFree.Address;
                     newFree.NextAddr = free.Address;
                     _cb.EmptyAddr = newFree.Address;
-                    WriteBlock(free, free.Address);
+                    WriteBlock(free);
                 }
-                WriteBlock(newFree, newFree.Address);
-                WriteBlock(_cb, 0);
+                WriteBlock(newFree);
+                WriteBlock(_cb);
             }
         }
 
@@ -105,7 +105,7 @@ namespace BPlusTree.DataStructures
                 var free = (EmptyBlock)ReadBlock(_cb.EmptyAddr);
                 _cb.EmptyAddr = free.NextAddr;
             }
-            WriteBlock(_cb, 0);
+            WriteBlock(_cb);
             return freeAddr;
         }
 
@@ -131,17 +131,17 @@ namespace BPlusTree.DataStructures
         //    return block.Address;
         //}
 
-        public void WriteBlock(IBlock block, long addr)
+        public void WriteBlock(IBlock block)
         {
             var buffer = block.GetBytes();
-            _stream.Seek(addr, SeekOrigin.Begin);
+            _stream.Seek(block.Address, SeekOrigin.Begin);
             _stream.Write(buffer, 0, buffer.Length);
         }
 
         public void SetRoot(long addr)
         {
             _cb.RootAddr = addr;
-            WriteBlock(_cb, 0);
+            WriteBlock(_cb);
         }
 
         private IBlock InitBlock(byte[] buffer)
@@ -155,18 +155,5 @@ namespace BPlusTree.DataStructures
         }
 
         public void Dispose() => _stream.Dispose();
-
-        public void Print()
-        {
-            var address = 0;
-            while (address < _stream.Length)
-            {
-                var block = ReadBlock(address);
-                var str = block.ToString();
-                Console.WriteLine(str);
-                Console.WriteLine();
-                address += block.ByteSize;
-            }
-        }
     }
 }

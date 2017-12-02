@@ -28,7 +28,8 @@ namespace DataStructuresUnitTest
                 for (var i = 0; i < numBlocks; i++)
                 {
                     var block = Utils.RandomDataBlock(random);
-                    factory.WriteBlock(block, factory.GetFreeAddress());
+                    block.Address = factory.GetFreeAddress();
+                    factory.WriteBlock(block);
                     blocks.Add(block);
                 }
             }
@@ -61,7 +62,8 @@ namespace DataStructuresUnitTest
                 for (var i = 0; i < numBlocks; i++)
                 {
                     var block = Utils.RandomDataBlock(random);
-                    factory.WriteBlock(block, factory.GetFreeAddress());
+                    block.Address = factory.GetFreeAddress();
+                    factory.WriteBlock(block);
                     blocks.Add(block);
                 }
             }
@@ -130,7 +132,8 @@ namespace DataStructuresUnitTest
                 for (var i = 0; i < numBlocks; i++)
                 {
                     var block = Utils.RandomDataBlock(random);
-                    factory.WriteBlock(block, factory.GetFreeAddress());
+                    block.Address = factory.GetFreeAddress();
+                    factory.WriteBlock(block);
                     blocks.Add(block);
                 }
             }
@@ -152,7 +155,10 @@ namespace DataStructuresUnitTest
             using (var factory = new BlockFactory<WritableInt, Patient>(Utils.RandomDataBlockSize, testFile))
             {
                 foreach (var block in removed)
-                    factory.WriteBlock(block, factory.GetFreeAddress());
+                {
+                    block.Address = factory.GetFreeAddress();
+                    factory.WriteBlock(block);
+                }
             }
             // test if empty blocks are refilled
             using (var factory = new BlockFactory<WritableInt, Patient>(Utils.RandomDataBlockSize, testFile))
@@ -183,7 +189,8 @@ namespace DataStructuresUnitTest
                 for (var i = 0; i < numBlocks; i++)
                 {
                     var block = Utils.RandomDataBlock(random);
-                    factory.WriteBlock(block, factory.GetFreeAddress());
+                    block.Address = factory.GetFreeAddress();
+                    factory.WriteBlock(block);
                     blocks.Add(block);
                 }
             }
@@ -223,7 +230,8 @@ namespace DataStructuresUnitTest
                 for (var i = 0; i < numBlocks; i++)
                 {
                     var block = Utils.RandomDataBlock(random);
-                    factory.WriteBlock(block, factory.GetFreeAddress());
+                    block.Address = factory.GetFreeAddress();
+                    factory.WriteBlock(block);
                     blocks.Add(block);
                 }
             }
@@ -247,7 +255,8 @@ namespace DataStructuresUnitTest
                 // test if it will append blocks correctly, if NextFreeAddress is set to end of file
                 for (var i = 0; i < numBlocks; i++)
                 {
-                    factory.WriteBlock(blocks[i], factory.GetFreeAddress());
+                    blocks[i].Address = factory.GetFreeAddress();
+                    factory.WriteBlock(blocks[i]);
                 }
                 Assert.AreEqual(fileLength, new FileInfo(testFile).Length);
                 // check reinserted blocks
