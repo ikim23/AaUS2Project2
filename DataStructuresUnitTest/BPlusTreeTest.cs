@@ -120,7 +120,7 @@ namespace DataStructuresUnitTest
                 Utils.AssertPatients(expectedPatient, foundPatient);
             }
             tree.Dispose();
-            File.Delete(testFile);
+            //File.Delete(testFile);
         }
     }
 }

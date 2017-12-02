@@ -32,6 +32,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -40,8 +42,10 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Blocks\UiUtils.cs" />
     <Compile Include="DataStructures\BlockFactory.cs" />
     <Compile Include="DataStructures\BPlusTree.cs" />
     <Compile Include="Blocks\ControlBlock.cs" />
@@ -49,6 +53,7 @@
     <Compile Include="Blocks\EmptyBlock.cs" />
     <Compile Include="Blocks\IBlock.cs" />
     <Compile Include="Blocks\IndexBlock.cs" />
+    <Compile Include="DataStructures\IBlockFactory.cs" />
     <Compile Include="DataStructures\SortedBlock.cs" />
     <Compile Include="DataStructures\SortedIndex.cs" />
     <Compile Include="Writables\ByteUtils.cs" />

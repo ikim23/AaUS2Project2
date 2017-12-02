@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Windows.Controls;
 using BPlusTree.DataStructures;
 using BPlusTree.Writables;
+using System.Linq;
+using System.Windows.Media;
 
 namespace BPlusTree.Blocks
 {
@@ -54,5 +57,66 @@ namespace BPlusTree.Blocks
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public override string ToString() => $"Type: {Type} Addr: {Address} Next: {NextBlock} Records: {_records.Count}";
+
+        public Grid CreateGrid()
+        {
+            var grid = new Grid();
+            var colLeft = new ColumnDefinition();
+            var colRight = new ColumnDefinition();
+            grid.ColumnDefinitions.Add(colLeft);
+            grid.ColumnDefinitions.Add(colRight);
+            var colorSwaper = UiUtils.GetColor().GetEnumerator();
+            colorSwaper.MoveNext();
+            var rowIndex = 0;
+            UiUtils.AddGridRow(grid, rowIndex++, "Type:", Type, colorSwaper.Current);
+            UiUtils.AddGridRow(grid, rowIndex++, "ByteSize:", ByteSize, colorSwaper.Current);
+            UiUtils.AddGridRow(grid, rowIndex++, "Address:", Address, colorSwaper.Current);
+            UiUtils.AddGridRow(grid, rowIndex++, "NextBlock:", NextBlock, colorSwaper.Current);
+            UiUtils.AddGridRow(grid, rowIndex++, "MaxSize:", MaxSize, colorSwaper.Current);
+            UiUtils.AddGridRow(grid, rowIndex++, "Records:", null, colorSwaper.Current);
+            var recordIndex = 0;
+            foreach (var record in _records)
+            {
+                var recordType = record.GetType();
+                var recordProps = recordType.GetProperties();
+                colorSwaper.MoveNext();
+                UiUtils.AddGridRow(grid, rowIndex++, $"Record {recordIndex++}:", null, Colors.Transparent);
+                foreach (var prop in recordProps)
+                {
+                    var propType = prop.PropertyType;
+                    if (!propType.IsGenericType)
+                    {
+                        var value = prop.GetValue(record);
+                        UiUtils.AddGridRow(grid, rowIndex++, prop.Name, value, colorSwaper.Current, 25);
+                    }
+                    else
+                    {
+                        var propTypeInterfaces = propType.GetInterfaces();
+                        var isEnumerable = propTypeInterfaces.Contains(typeof(IEnumerable));
+                        if (isEnumerable)
+                        {
+                            UiUtils.AddGridRow(grid, rowIndex++, $"{prop.Name}:", null, colorSwaper.Current, 25);
+                            var enumerable = (IEnumerable)prop.GetValue(record);
+                            var index = 0;
+                            foreach (var item in enumerable)
+                            {
+                                if (item == null) break;
+                                var itemType = item.GetType();
+                                var itemProps = itemType.GetProperties();
+                                colorSwaper.MoveNext();
+                                UiUtils.AddGridRow(grid, rowIndex++, $"{prop.Name} {index++}:", null, Colors.Transparent, 50);
+                                foreach (var itemProp in itemProps)
+                                {
+                                    var value = itemProp.GetValue(item);
+                                    UiUtils.AddGridRow(grid, rowIndex++, itemProp.Name, value, colorSwaper.Current, 50);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            colorSwaper.Dispose();
+            return grid;
+        }
     }
 }

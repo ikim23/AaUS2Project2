@@ -1,4 +1,5 @@
-﻿using BPlusTree.Writables;
+﻿using System.Windows.Controls;
+using BPlusTree.Writables;
 
 namespace BPlusTree.Blocks
 {
@@ -7,6 +8,7 @@ namespace BPlusTree.Blocks
         public static char Type => 'E';
 
         public long Address { get; set; }
+
         public int ByteSize => ByteUtils.ByteSize(_type, _prevEmptyBlock, _nextEmptyBlock);
         public long PrevAddr
         {
@@ -31,5 +33,7 @@ namespace BPlusTree.Blocks
         public void FromBytes(byte[] bytes, int index = 0) => ByteUtils.FromBytes(bytes, index + _type.ByteSize, _prevEmptyBlock, _nextEmptyBlock);
 
         public override string ToString() => $"Type: {Type} Addr: {Address} Prev: {PrevAddr} Next: {NextAddr}";
+
+        public Grid CreateGrid() => UiUtils.CreateGrid(this);
     }
 }

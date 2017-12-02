@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DataStructuresUnitTest
 {
-    internal static class Utils
+    public static class Utils
     {
         public static int RandomDataBlockSize = 10;
 
