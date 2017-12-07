@@ -16,6 +16,12 @@ namespace BPlusTree.DataStructures
 
         public TV Find(TK key)
         {
+            var dataBlock = FindDataBlock(key);
+            return dataBlock.Find(key);
+        }
+
+        private DataBlock<TK, TV> FindDataBlock(TK key)
+        {
             var block = _factory.GetRoot();
             if (block == null) throw new KeyNotFoundException();
             while (block is IndexBlock<TK>)
@@ -25,7 +31,7 @@ namespace BPlusTree.DataStructures
                 block = _factory.ReadBlock(childAddress);
             }
             var dataBlock = (DataBlock<TK, TV>)block;
-            return dataBlock.Find(key);
+            return dataBlock;
         }
 
         public void Insert(TK key, TV value)
@@ -81,7 +87,6 @@ namespace BPlusTree.DataStructures
                     var leftIndexBlock = parentBlock;
                     var rightIndexBlock = leftIndexBlock.Split(middleDataKey, out var middleIndexKey, leftDataBlock.Address, rightDataBlock.Address);
                     rightIndexBlock.Address = _factory.GetFreeAddress();
-                    // TOTO SA MOZE VYTIAHNUT O UROVEN VYSSIE
                     _factory.WriteBlock(leftDataBlock);
                     _factory.WriteBlock(rightDataBlock);
                     // store middleIndexKey in upper level
@@ -122,6 +127,168 @@ namespace BPlusTree.DataStructures
             }
         }
 
+        public void Remove(TK key)
+        {
+            var block = _factory.GetRoot();
+            if (block == null) throw new KeyNotFoundException();
+            IndexBlock<TK> parent = null;
+            var indexContainsKey = false;
+            IndexBlock<TK> indexContaining = null;
+            var parentAddresses = new Stack<long>();
+            while (block is IndexBlock<TK>)
+            {
+                parent = (IndexBlock<TK>)block;
+                parentAddresses.Push(parent.Address);
+                if (!indexContainsKey && parent.Contains(key))
+                {
+                    indexContaining = parent;
+                    indexContainsKey = true;
+                }
+                var childAddress = parent.Find(key);
+                block = _factory.ReadBlock(childAddress);
+            }
+            var dataBlock = (DataBlock<TK, TV>)block;
+            if (!dataBlock.Contains(key)) throw new KeyNotFoundException($"not found: {key}");
+            dataBlock.Remove(key);
+            if (!dataBlock.IsUnderFlow())
+            {
+                if (indexContaining != null)
+                {
+                    var minKey = dataBlock.MinKey();
+                    var idx = indexContaining.KeyIndex(key); // indexOf
+                    indexContaining.SetParentKey(idx, minKey);
+                    _factory.WriteBlock(parent);
+                }
+                _factory.WriteBlock(dataBlock);
+                return;
+            }
+            // borrow from sibling
+            if (parent == null) return; // only data block as root
+            var dataBlockIndex = parent.ChildIndex(key);
+            var leftSiblingAddr = parent.GetChildAddress(dataBlockIndex - 1);
+            var rightSiblingAddr = parent.GetChildAddress(dataBlockIndex + 1);
+            DataBlock<TK, TV> leftSibling = null;
+            DataBlock<TK, TV> rightSibling = null;
+            if (leftSiblingAddr != long.MinValue) leftSibling = (DataBlock<TK, TV>)_factory.ReadBlock(leftSiblingAddr);
+            if (rightSiblingAddr != long.MinValue) rightSibling = (DataBlock<TK, TV>)_factory.ReadBlock(rightSiblingAddr);
+            if (indexContaining != null)
+            {
+                var minKey = dataBlock.MinKey();
+                var idx = indexContaining.KeyIndex(key); // indexOf
+                indexContaining.SetParentKey(idx, minKey);
+            }
+            var shift = Shift(parent, dataBlockIndex, ref dataBlock, ref leftSibling, ref rightSibling);
+            if (!shift)
+            {
+                // shift not successful => merge
+                Merge(parent, dataBlockIndex, ref dataBlock, ref leftSibling, ref rightSibling);
+            }
+            _factory.WriteBlock(parent);
+            if (dataBlock != null) _factory.WriteBlock(dataBlock);
+            if (leftSibling != null) _factory.WriteBlock(leftSibling);
+            if (rightSibling != null) _factory.WriteBlock(rightSibling);
+            if (shift) return;
+            // continue in upper level
+            var indexBlock = parent;
+            if (!indexBlock.IsUnderFlow())
+            {
+                return;
+            }
+            if (parentAddresses.Count > 0)
+            {
+                parentAddresses.Pop();
+            }
+            if (parentAddresses.Count > 0)
+            {
+                var parentAddr = parentAddresses.Pop();
+                var indexBlockParent = (IndexBlock<TK>)_factory.ReadBlock(parentAddr);
+                var indexBlockIndex = indexBlockParent.ChildIndex(key);// co sa stane ked sa prebije index prvok a dojde sa sem (indexContaining)
+                var leftIndexSiblingAddr = indexBlockParent.GetChildAddress(indexBlockIndex - 1);
+                var rightIndextSiblingAddr = indexBlockParent.GetChildAddress(indexBlockIndex + 1);
+                IndexBlock<TK> leftIndexSibling = null;
+                IndexBlock<TK> rightIndexSibling = null;
+                if (leftIndexSiblingAddr != long.MinValue) leftIndexSibling = (IndexBlock<TK>)_factory.ReadBlock(leftIndexSiblingAddr);
+                if (rightIndextSiblingAddr != long.MinValue) rightIndexSibling = (IndexBlock<TK>)_factory.ReadBlock(rightIndextSiblingAddr);
+                var indexShift = Shift(indexBlockParent, indexBlockIndex, ref indexBlock, ref leftIndexSibling, ref rightIndexSibling);
+                if (!indexShift)
+                {
+                    Merge(indexBlockParent, indexBlockIndex, ref indexBlock, ref leftIndexSibling, ref rightIndexSibling);
+                }
+                _factory.WriteBlock(indexBlockParent);
+                if (indexBlock != null) _factory.WriteBlock(indexBlock);
+                if (leftIndexSibling != null) _factory.WriteBlock(leftIndexSibling);
+                if (rightIndexSibling != null) _factory.WriteBlock(rightIndexSibling);
+            }
+        }
+
+        public static bool Shift(IndexBlock<TK> parent, int dataBlockIndex, ref DataBlock<TK, TV> dataBlock, ref DataBlock<TK, TV> leftSibling, ref DataBlock<TK, TV> rightSibling)
+        {
+            if (leftSibling != null && leftSibling.CanBorrow())
+            {
+                var middleKey = dataBlock.ShiftMaxFromLeft(leftSibling);
+                parent.SetParentKey(dataBlockIndex - 1, middleKey);
+                return true;
+            }
+            if (rightSibling != null && rightSibling.CanBorrow())
+            {
+                var middleKey = dataBlock.ShiftMinFromRight(rightSibling);
+                parent.SetParentKey(dataBlockIndex, middleKey);
+                return true;
+            }
+            return false;
+        }
+
+        public static bool Shift(IndexBlock<TK> indexBlockParent, int indexBlockIndex, ref IndexBlock<TK> indexBlock, ref IndexBlock<TK> leftIndexSibling, ref IndexBlock<TK> rightIndexSibling)
+        {// index !! mozem vybrat zo stredu parenta... == SOLVED, not TESTED
+            if (leftIndexSibling != null && leftIndexSibling.CanBorrow())
+            {
+                indexBlock.ShiftMaxFromLeft(indexBlockParent, indexBlockIndex, leftIndexSibling);
+                return true;
+            }
+            if (rightIndexSibling != null && rightIndexSibling.CanBorrow())
+            {
+                indexBlock.ShiftMinFromRight(indexBlockParent, indexBlockIndex, rightIndexSibling);
+                return true;
+            }
+            return false;
+        }
+
+        public void Merge(IndexBlock<TK> parent, int dataBlockIndex, ref DataBlock<TK, TV> dataBlock, ref DataBlock<TK, TV> leftSibling, ref DataBlock<TK, TV> rightSibling)
+        {
+            if (leftSibling != null)
+            {
+                leftSibling.Merge(dataBlock);
+                parent.MergeRemove(dataBlockIndex - 1, leftSibling.Address);
+                _factory.RemoveBlock(dataBlock);
+                // fix addressess
+                leftSibling.NextBlock = dataBlock.NextBlock;
+                dataBlock = null;
+            }
+            else if (rightSibling != null)
+            {
+                dataBlock.Merge(rightSibling);
+                parent.MergeRemove(dataBlockIndex, dataBlock.Address);
+                _factory.RemoveBlock(rightSibling);
+                // fix addressess
+                dataBlock.NextBlock = rightSibling.NextBlock;
+                rightSibling = null;
+            }
+            else throw new InvalidOperationException("root??");
+        }
+
+        public void Merge(IndexBlock<TK> indexBlockParent, int indexBlockIndex, ref IndexBlock<TK> indexBlock, ref IndexBlock<TK> leftIndexSibling, ref IndexBlock<TK> rightIndexSibling)
+        {
+            if (leftIndexSibling != null)
+            {
+                //leftIndexSibling.Merge(); adresy...
+            }
+            else if (rightIndexSibling != null)
+            {
+                
+            }
+            else throw new InvalidOperationException("root??");
+        }
+
         public IEnumerable<TV> InOrder()
         {
             var block = _factory.GetRoot();
@@ -135,13 +302,14 @@ namespace BPlusTree.DataStructures
             var nextAddress = block.Address;
             do
             {
-                var dataBlock = (DataBlock<TK, TV>)_factory.ReadBlock(nextAddress);
+                block = _factory.ReadBlock(nextAddress);
+                var dataBlock = (DataBlock<TK, TV>)block;
                 foreach (var value in dataBlock)
                     yield return value;
                 nextAddress = dataBlock.NextBlock;
             } while (nextAddress != long.MinValue);
         }
-        
+
         public void Dispose() => _factory.Dispose();
     }
 }

@@ -11,12 +11,18 @@ namespace BPlusTree.DataStructures
         public int ByteSize => sizeof(int) + MaxSize * (Items[0] != null ? Items[0] : new TK()).ByteSize;
         public int MaxSize { get; }
         public int Count { get; internal set; }
+        public TK Min => Items[0];
         public readonly TK[] Items;
 
         public SortedIndex(int size)
         {
             MaxSize = size;
             Items = new TK[size + 1];
+        }
+
+        public SortedIndex(int size, IEnumerable<TK> items) : this(size)
+        {
+            foreach (var item in items) Insert(item);
         }
 
         public bool IsFull() => Count >= MaxSize;
@@ -73,6 +79,73 @@ namespace BPlusTree.DataStructures
             Array.Copy(Items, index + 1, Items, index, Count - (index + 1));
             Count--;
             return value;
+        }
+
+        public void Remove(int index)
+        {
+            Array.Copy(Items, index + 1, Items, index, Count - (index + 1));
+            Count--;
+        }
+
+        public TK RemoveMax()
+        {
+            if (Count == 0) throw new InvalidOperationException("already empty");
+            var max = Items[Count - 1];
+            Count--;
+            return max;
+        }
+
+        public TK ShiftMaxFromLeft(SortedIndex<TK> left)
+        {
+            var max = left.RemoveMax();
+            Array.Copy(Items, 0, Items, 1, Count);
+            Items[0] = max;
+            Count++;
+            return max; // return new middle key
+        }
+
+        public TK RemoveMin()
+        {
+            if (Count == 0) throw new InvalidOperationException("already empty");
+            var min = Items[0];
+            Array.Copy(Items, 1, Items, 0, Count);
+            Count--;
+            return min;
+        }
+
+        public TK Update(int index, TK newValue)
+        {
+            if (index < 0 || index >= Count) throw new IndexOutOfRangeException();
+            var old = Items[index];
+            Items[index] = newValue;
+            return old;
+        }
+
+        public void AddToEnd(TK key)
+        {
+            Items[Count] = key;
+            Count++;
+        }
+
+        public void AddToStart(TK key)
+        {
+            Array.Copy(Items, 0, Items, 1, Count);
+            Items[0] = key;
+            Count++;
+        }
+
+        public TK ShiftMinFromRight(SortedIndex<TK> right)
+        {
+            var min = right.RemoveMin();
+            Items[Count] = min;
+            Count++;
+            return right.Min; // return new middle key
+        }
+
+        public void Merge(SortedIndex<TK> right)
+        {
+            Array.Copy(right.Items, 0, Items, Count, right.Count);
+            Count += right.Count;
         }
 
         public int FindInsertionIndex(TK key)

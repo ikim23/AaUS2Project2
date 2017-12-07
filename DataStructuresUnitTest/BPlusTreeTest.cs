@@ -45,8 +45,8 @@ namespace DataStructuresUnitTest
         [TestMethod]
         public void RandomInsertTest()
         {
-            var reps = 10;
-            var numInsertions = 10_000;
+            var reps = 1;
+            var numInsertions = 5_000;
             for (var rep = 0; rep < reps; rep++)
             {
                 var rand = new Random(rep);
@@ -87,7 +87,7 @@ namespace DataStructuresUnitTest
                     Assert.AreEqual(item, result.Value);
                 }
                 tree.Dispose();
-                File.Delete(testFile);
+                //File.Delete(testFile);
             }
         }
 
@@ -121,6 +121,36 @@ namespace DataStructuresUnitTest
             }
             tree.Dispose();
             //File.Delete(testFile);
+        }
+
+        [TestMethod]
+        public void RemoveTest()
+        {
+            var numInsertions = 30;
+            var testFile = $"{DateTime.Now.Ticks}.bin";
+            var tree = new BPlusTree<WritableInt, WritableInt>(5, testFile);
+            for (var i = 0; i < numInsertions; i++)
+            {
+                //Console.WriteLine(i);
+                tree.Insert(new WritableInt(i), new WritableInt(i));
+            }
+            // check if all present
+            for (var i = 0; i < numInsertions; i++)
+            {
+                tree.Find(new WritableInt(i));
+            }
+            // delete 
+            for (var i = 0; i < numInsertions; i++)
+            {
+                tree.Remove(new WritableInt(i));
+            }
+            // test if in order match
+            var expected = Enumerable.Range(0, numInsertions).Where(i => i % 2 == 1).ToList();
+            var returned = tree.InOrder().Select(e => e.Value).ToList();
+            Assert.AreEqual(expected.Count, returned.Count);
+            CollectionAssert.AreEqual(expected, returned);
+            tree.Dispose();
+            File.Delete(testFile);
         }
     }
 }
