@@ -15,6 +15,7 @@ namespace BPlusTree.Blocks
 
         public long Address { get; set; }
         public int ByteSize => ByteUtils.ByteSize(_type, _nextBlock, _records);
+        public int FillFactor => (int) (Math.Ceiling((double) _records.MaxSize / 2) - 1);
         public int MaxSize => _records.MaxSize;
         public long NextBlock
         {
@@ -31,6 +32,12 @@ namespace BPlusTree.Blocks
             _records = new SortedBlock<TK, TV>(size);
         }
 
+        public DataBlock(int size, IEnumerable<Tuple<TK,TV>> items)
+        {
+            Address = long.MinValue;
+            _records = new SortedBlock<TK, TV>(size, items);
+        }
+
         public DataBlock<TK, TV> Split(TK key, TV value, out TK middle)
         {
             var rightRecords = _records.Split(key, value, out middle);
@@ -44,9 +51,28 @@ namespace BPlusTree.Blocks
 
         public bool IsFull() => _records.IsFull();
 
+        public bool IsUnderFlow() => _records.Count < FillFactor;
+
+        public bool CanBorrow() => _records.Count > FillFactor;
+
         public void Insert(TK key, TV value) => _records.Insert(key, value);
 
         public TV Find(TK key) => _records.Find(key);
+
+        public bool Contains(TK key) => _records.Contains(key);
+
+        public void Remove(TK key) => _records.Remove(key);
+
+        public TK ShiftMaxFromLeft(DataBlock<TK, TV> left) => _records.ShiftMaxFromLeft(left._records);
+
+        public TK ShiftMinFromRight(DataBlock<TK, TV> right) => _records.ShiftMinFromRight(right._records);
+
+        public void Merge(DataBlock<TK, TV> right)
+        {
+            _records.Merge(right._records);
+        }
+
+        public TK MinKey() => _records.MinKey();
 
         public byte[] GetBytes() => ByteUtils.Join(_type, _nextBlock, _records);
 

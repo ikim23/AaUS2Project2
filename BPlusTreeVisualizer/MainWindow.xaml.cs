@@ -95,6 +95,7 @@ namespace BPlusTreeVisualizer
         public long CurrentAddress { get; internal set; }
         public IBlock CurrentBlock { get; internal set; }
         public int BlockIndex { get; internal set; }
+        public int BlockSize;
 
         public BlockSwiper(InputParams param)
         {
@@ -113,7 +114,8 @@ namespace BPlusTreeVisualizer
 
         public Grid Next()
         {
-            CurrentAddress += CurrentBlock.ByteSize;
+            BlockSize = Math.Max(BlockSize, CurrentBlock.ByteSize);
+            CurrentAddress += BlockSize;
             BlockIndex++;
             CurrentBlock = Factory.ReadBlock(CurrentAddress);
             return CurrentBlock.CreateGrid();
@@ -121,7 +123,8 @@ namespace BPlusTreeVisualizer
 
         public Grid Prev()
         {
-            CurrentAddress -= CurrentBlock.ByteSize;
+            BlockSize = Math.Max(BlockSize, CurrentBlock.ByteSize);
+            CurrentAddress -= BlockSize;
             BlockIndex--;
             if (CurrentAddress < 0) CurrentAddress = 0;
             CurrentBlock = Factory.ReadBlock(CurrentAddress);

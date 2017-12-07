@@ -18,6 +18,11 @@ namespace BPlusTree.DataStructures
             _items = new SortedIndex<SortedBlockItem<TK, TV>>(size);
         }
 
+        public SortedBlock(int size, IEnumerable<Tuple<TK,TV>> items) : this(size)
+        {
+            foreach (var tuple in items) Insert(tuple.Item1, tuple.Item2);
+        }
+
         public bool IsFull() => _items.IsFull();
 
         public bool Contains(TK key)
@@ -56,6 +61,17 @@ namespace BPlusTree.DataStructures
             var removedItem = _items.Remove(itemToRemove);
             return removedItem.Value;
         }
+
+        public TK ShiftMaxFromLeft(SortedBlock<TK, TV> left) => _items.ShiftMaxFromLeft(left._items).Key;
+
+        public TK ShiftMinFromRight(SortedBlock<TK, TV> right) => _items.ShiftMinFromRight(right._items).Key;
+
+        public void Merge(SortedBlock<TK, TV> right)
+        {
+            _items.Merge(right._items);
+        }
+
+        public TK MinKey() => _items.Min.Key;
 
         public int FindInsertionIndex(TK key)
         {

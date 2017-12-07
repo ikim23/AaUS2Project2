@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="BlockFactoryTest.cs" />
     <Compile Include="BPlusTreeTest.cs" />
+    <Compile Include="RemoveTest.cs" />
     <Compile Include="SerializationTest.cs" />
     <Compile Include="SortedArrayTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

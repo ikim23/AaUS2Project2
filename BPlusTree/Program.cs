@@ -1,4 +1,6 @@
-﻿namespace BPlusTree
+﻿using System;
+
+namespace BPlusTree
 {
     class Program
     {
