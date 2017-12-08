@@ -142,7 +142,9 @@ namespace BPlusTree.Blocks
 
         public void Merge(IndexBlock<TK> parent, int parentIndex, IndexBlock<TK> left)
         {
-            var middleKey = parent._keys.RemoveMin(); // joining key
+            Array.Copy(parent._children.Value, parentIndex + 1, parent._children.Value, parentIndex, parent._children.Value.Length - (parentIndex + 1));
+            var middleKey = parent._keys.RemoveAt(parentIndex); // joining key
+            parent._children[parentIndex] = new WritableLong(Address);
             _keys.AddToEnd(middleKey);
             var dstIdx = _keys.Count;
             Array.Copy(left._keys.Items, 0, _keys.Items, _keys.Count, left._keys.Count);
@@ -165,7 +167,7 @@ namespace BPlusTree.Blocks
 
         public void FromBytes(byte[] bytes, int index = 0) => ByteUtils.FromBytes(bytes, index + _type.ByteSize, _keys, _children);
 
-        public override string ToString() => $"Type: {Type} Addr: {Address}\nKeys: {_keys.Count}";
+        public override string ToString() => $"Type: {Type} Addr: {Address} Keys: {_keys.Count}";
 
         public Grid CreateGrid()
         {
@@ -196,10 +198,10 @@ namespace BPlusTree.Blocks
             }
             colorSwaper.MoveNext();
             UiUtils.AddGridRow(grid, rowIndex++, "Children Addresses:", null, Colors.Transparent);
-            for (var childIndex = 0; childIndex < _keys.Count + 1; childIndex++)
+            for (var childIndex = 0; childIndex <= _keys.Count; childIndex++)
             {
                 colorSwaper.MoveNext();
-                UiUtils.AddGridRow(grid, rowIndex++, $"Child {childIndex++}:", _children[childIndex].Value, colorSwaper.Current, 25);
+                UiUtils.AddGridRow(grid, rowIndex++, $"Child {childIndex}:", _children[childIndex].Value, colorSwaper.Current, 25);
             }
             colorSwaper.Dispose();
             return grid;

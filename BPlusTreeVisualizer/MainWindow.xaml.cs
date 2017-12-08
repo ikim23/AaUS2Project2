@@ -25,9 +25,9 @@ namespace BPlusTreeVisualizer
             ValueCombo.Items.Add(typeof(Hospitalization));
             // remove
             KeyCombo.SelectedIndex = 0;
-            ValueCombo.SelectedIndex = 1;
-            FileText.Text = @"C:\Users\ikim23\source\repos\AaUS2Project2\b8-int-patients.bin";
-            BlockSizeText.Text = 8.ToString();
+            ValueCombo.SelectedIndex = 0;
+            FileText.Text = @"C:\Users\ikim23\source\repos\AaUS2Project2\debug.bin";
+            BlockSizeText.Text = 6.ToString();
         }
 
         private void OpenClick(object sender, RoutedEventArgs e)

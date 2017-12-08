@@ -190,35 +190,47 @@ namespace BPlusTree.DataStructures
             if (shift) return;
             // continue in upper level
             var indexBlock = parent;
-            if (!indexBlock.IsUnderFlow())
-            {
-                return;
-            }
+            IndexBlock<TK> indexBlockParent = null;
+            IndexBlock<TK> leftIndexSibling = null;
+            IndexBlock<TK> rightIndexSibling = null;
             if (parentAddresses.Count > 0)
             {
                 parentAddresses.Pop();
             }
-            if (parentAddresses.Count > 0)
+            while (true)
             {
+                if (!indexBlock.IsUnderFlow())
+                {
+                    return;
+                }
+                if (parentAddresses.Count == 0) return;
                 var parentAddr = parentAddresses.Pop();
-                var indexBlockParent = (IndexBlock<TK>)_factory.ReadBlock(parentAddr);
+                indexBlockParent = (IndexBlock<TK>)_factory.ReadBlock(parentAddr);
                 var indexBlockIndex = indexBlockParent.ChildIndex(key);// co sa stane ked sa prebije index prvok a dojde sa sem (indexContaining)
                 var leftIndexSiblingAddr = indexBlockParent.GetChildAddress(indexBlockIndex - 1);
                 var rightIndextSiblingAddr = indexBlockParent.GetChildAddress(indexBlockIndex + 1);
-                IndexBlock<TK> leftIndexSibling = null;
-                IndexBlock<TK> rightIndexSibling = null;
-                if (leftIndexSiblingAddr != long.MinValue) leftIndexSibling = (IndexBlock<TK>)_factory.ReadBlock(leftIndexSiblingAddr);
-                if (rightIndextSiblingAddr != long.MinValue) rightIndexSibling = (IndexBlock<TK>)_factory.ReadBlock(rightIndextSiblingAddr);
+                if (leftIndexSiblingAddr != long.MinValue)
+                    leftIndexSibling = (IndexBlock<TK>) _factory.ReadBlock(leftIndexSiblingAddr);
+                else leftIndexSibling = null;
+                if (rightIndextSiblingAddr != long.MinValue)
+                    rightIndexSibling = (IndexBlock<TK>) _factory.ReadBlock(rightIndextSiblingAddr);
+                else rightSibling = null;
                 var indexShift = Shift(indexBlockParent, indexBlockIndex, ref indexBlock, ref leftIndexSibling, ref rightIndexSibling);
-                if (!indexShift)
-                {
-                    Merge(indexBlockParent, indexBlockIndex, ref indexBlock, ref leftIndexSibling, ref rightIndexSibling);
-                }
+                if (!indexShift) Merge(indexBlockParent, indexBlockIndex, ref indexBlock, ref leftIndexSibling, ref rightIndexSibling);
                 _factory.WriteBlock(indexBlockParent);
                 if (indexBlock != null) _factory.WriteBlock(indexBlock);
                 if (leftIndexSibling != null) _factory.WriteBlock(leftIndexSibling);
                 if (rightIndexSibling != null) _factory.WriteBlock(rightIndexSibling);
+                if (indexShift) return;
+                // next round
+                indexBlock = indexBlockParent;
             }
+            //if (indexBlockParent != null) _factory.WriteBlock(indexBlockParent);
+            //if (indexBlock != null) _factory.WriteBlock(indexBlock);
+            //if (leftIndexSibling != null) _factory.WriteBlock(leftIndexSibling);
+            //if (rightIndexSibling != null) _factory.WriteBlock(rightIndexSibling);
+
+            // TREBA VYMYSLIET AKO UPRAVIT ROOT ADRESU... KED SA ZNIZI CELY STROM O JEDEN LEVEL
         }
 
         public static bool Shift(IndexBlock<TK> parent, int dataBlockIndex, ref DataBlock<TK, TV> dataBlock, ref DataBlock<TK, TV> leftSibling, ref DataBlock<TK, TV> rightSibling)
@@ -242,7 +254,7 @@ namespace BPlusTree.DataStructures
         {// index !! mozem vybrat zo stredu parenta... == SOLVED, not TESTED
             if (leftIndexSibling != null && leftIndexSibling.CanBorrow())
             {
-                indexBlock.ShiftMaxFromLeft(indexBlockParent, indexBlockIndex, leftIndexSibling);
+                indexBlock.ShiftMaxFromLeft(indexBlockParent, indexBlockIndex - 1, leftIndexSibling);
                 return true;
             }
             if (rightIndexSibling != null && rightIndexSibling.CanBorrow())
@@ -273,20 +285,24 @@ namespace BPlusTree.DataStructures
                 dataBlock.NextBlock = rightSibling.NextBlock;
                 rightSibling = null;
             }
-            else throw new InvalidOperationException("root??");
+            else if (_factory.isRoot(dataBlock.Address)) throw new InvalidOperationException("index root??");
         }
 
         public void Merge(IndexBlock<TK> indexBlockParent, int indexBlockIndex, ref IndexBlock<TK> indexBlock, ref IndexBlock<TK> leftIndexSibling, ref IndexBlock<TK> rightIndexSibling)
         {
             if (leftIndexSibling != null)
             {
-                //leftIndexSibling.Merge(); adresy...
+                leftIndexSibling.Merge(indexBlockParent, indexBlockIndex - 1, indexBlock);
+                _factory.RemoveBlock(indexBlock);
+                indexBlock = null;
             }
             else if (rightIndexSibling != null)
             {
-                
+                indexBlock.Merge(indexBlockParent, indexBlockIndex, rightIndexSibling);
+                _factory.RemoveBlock(rightIndexSibling);
+                rightIndexSibling = null;
             }
-            else throw new InvalidOperationException("root??");
+            else if (_factory.isRoot(indexBlock.Address)) throw new InvalidOperationException("root??");
         }
 
         public IEnumerable<TV> InOrder()
