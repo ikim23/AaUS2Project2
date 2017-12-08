@@ -29,6 +29,7 @@ namespace BPlusTree.DataStructures
 
         public void RemoveBlock(IBlock block)
         {
+            Console.WriteLine($"Remove: {block}");
             var lastAddress = _stream.Length - _buffer.Length;
             if (block.Address == lastAddress)
             {
@@ -41,12 +42,7 @@ namespace BPlusTree.DataStructures
                     var lastBlock = ReadBlock(lastAddress);
                     if (lastBlock.GetType() != typeof(EmptyBlock)) break;
                     var lastFree = (EmptyBlock)lastBlock;
-                    if (lastFree.PrevAddr == long.MinValue)
-                    { // no more empty blocks, new blocks will be appended to end
-                        _cb.EmptyAddr = lastAddress;
-                        WriteBlock(_cb);
-                    }
-                    else
+                    if (lastFree.PrevAddr != long.MinValue)
                     {
                         var prev = (EmptyBlock)ReadBlock(lastFree.PrevAddr);
                         prev.NextAddr = lastFree.NextAddr;
@@ -57,6 +53,11 @@ namespace BPlusTree.DataStructures
                         var next = (EmptyBlock)ReadBlock(lastFree.NextAddr);
                         next.PrevAddr = lastFree.PrevAddr;
                         WriteBlock(next);
+                    }
+                    if (lastFree.PrevAddr == long.MinValue && lastFree.NextAddr == long.MinValue)
+                    { // no more empty blocks, new blocks will be appended to end
+                        _cb.EmptyAddr = lastAddress;
+                        WriteBlock(_cb);
                     }
                     _stream.SetLength(lastAddress);
                     lastAddress -= _buffer.Length;
@@ -71,7 +72,8 @@ namespace BPlusTree.DataStructures
                 }
                 else
                 {
-                    var free = (EmptyBlock)ReadBlock(_cb.EmptyAddr);
+                    var blk = ReadBlock(_cb.EmptyAddr);
+                    var free = (EmptyBlock)blk;
                     free.PrevAddr = newFree.Address;
                     newFree.NextAddr = free.Address;
                     _cb.EmptyAddr = newFree.Address;
@@ -80,6 +82,8 @@ namespace BPlusTree.DataStructures
                 WriteBlock(newFree);
                 WriteBlock(_cb);
             }
+            Console.WriteLine($"Cntrol: {_cb}");
+            Console.WriteLine($"Lenght: {_stream.Length}\n");
         }
 
         public IBlock ReadBlock(long addr = 0)
@@ -121,6 +125,8 @@ namespace BPlusTree.DataStructures
             _cb.RootAddr = addr;
             WriteBlock(_cb);
         }
+
+        public bool isRoot(long addr) => _cb.RootAddr == addr;
 
         public long Length() => _stream.Length;
 

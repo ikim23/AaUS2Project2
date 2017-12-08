@@ -113,6 +113,15 @@ namespace BPlusTree.DataStructures
             return min;
         }
 
+        public TK RemoveAt(int index)
+        {
+            if (index < 0 || index >= Count) throw new IndexOutOfRangeException();
+            var value = Items[index];
+            Array.Copy(Items, index + 1, Items, index, Count - (index + 1));
+            Count--;
+            return value;
+        }
+
         public TK Update(int index, TK newValue)
         {
             if (index < 0 || index >= Count) throw new IndexOutOfRangeException();

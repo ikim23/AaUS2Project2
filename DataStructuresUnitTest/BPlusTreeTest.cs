@@ -126,9 +126,9 @@ namespace DataStructuresUnitTest
         [TestMethod]
         public void RemoveTest()
         {
-            var numInsertions = 30;
+            var numInsertions = 1_00;
             var testFile = $"{DateTime.Now.Ticks}.bin";
-            var tree = new BPlusTree<WritableInt, WritableInt>(5, testFile);
+            var tree = new BPlusTree<WritableInt, WritableInt>(10, testFile);
             for (var i = 0; i < numInsertions; i++)
             {
                 //Console.WriteLine(i);
@@ -143,14 +143,87 @@ namespace DataStructuresUnitTest
             for (var i = 0; i < numInsertions; i++)
             {
                 tree.Remove(new WritableInt(i));
+                // test search
+                for (var index = i + 1; index < numInsertions; index++)
+                {
+                    tree.Find(new WritableInt(index));
+                }
+                // test if in order match
+                var expected = Enumerable.Range(i + 1, numInsertions - (i + 1)).ToList();
+                var returned = tree.InOrder().Select(e => e.Value).ToList();
+                //Console.WriteLine(string.Join(",", expected));
+                //Console.WriteLine(string.Join(",", returned));
+                //Console.WriteLine();
+                Assert.AreEqual(expected.Count, returned.Count);
+                CollectionAssert.AreEqual(expected, returned, $@"
+                Expected: {string.Join(",", expected)}
+                Returned: {string.Join(",", returned)}");
             }
-            // test if in order match
-            var expected = Enumerable.Range(0, numInsertions).Where(i => i % 2 == 1).ToList();
-            var returned = tree.InOrder().Select(e => e.Value).ToList();
-            Assert.AreEqual(expected.Count, returned.Count);
-            CollectionAssert.AreEqual(expected, returned);
             tree.Dispose();
             File.Delete(testFile);
+        }
+
+        [TestMethod]
+        public void RandomInsertRemoveTest()
+        {
+            var reps = 1;
+            var numInsertions = 1_00;
+            for (var rep = 0; rep < reps; rep++)
+            {
+                var blockSize = 6 + rep;
+                var rand = new Random(blockSize);
+                var testFile = $"{DateTime.Now.Ticks}.bin";
+                var tree = new BPlusTree<WritableInt, WritableInt>(blockSize, testFile);
+                var items = Utils.RandomUniqueList(rand, numInsertions);
+                foreach (var key in items)
+                {
+                    tree.Insert(key, key);
+                }
+                // check if all keys are present
+                for (var i = 0; i < numInsertions; i++)
+                {
+                    tree.Find(new WritableInt(i));
+                }
+                // RANDOM DELETE/INSERT
+                var removeItems = items.OrderBy(v => rand.Next()).ToList();
+                while (removeItems.Count > 0)
+                {
+                    var removeItem = removeItems[0];
+                    removeItems.RemoveAt(0);
+                    try
+                    {
+                        var val = removeItem.Value;
+                        if (val == 74)
+                        {
+                            var e = removeItems.Select(i => i.Value).ToList();
+                            e.Sort();
+                            Console.WriteLine(string.Join(",", e));
+                            return;
+                        }
+                        tree.Remove(removeItem);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"Remove: {removeItem}, Size: {removeItems.Count}, BlockSize: {blockSize}");
+                        Console.WriteLine(e);
+                        throw e;
+                    }
+                    // find all
+                    foreach (var notRemovedItem in removeItems)
+                    {
+                        tree.Find(notRemovedItem);
+                    }
+                    // check in order
+                    var expected = removeItems.Select(i => i.Value).ToList();
+                    expected.Sort();
+                    var returned = tree.InOrder().Select(i => i.Value).ToList();
+                    CollectionAssert.AreEqual(expected, returned, $@"
+                        Expected: {string.Join(",", expected)}
+                        Returned: {string.Join(",", returned)}");
+                }
+                tree.Dispose();
+                File.Delete(testFile);
+            }
         }
     }
 }
