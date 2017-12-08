@@ -214,7 +214,7 @@ namespace BPlusTree.DataStructures
                 else leftIndexSibling = null;
                 if (rightIndextSiblingAddr != long.MinValue)
                     rightIndexSibling = (IndexBlock<TK>) _factory.ReadBlock(rightIndextSiblingAddr);
-                else rightSibling = null;
+                else rightIndexSibling = null;
                 var indexShift = Shift(indexBlockParent, indexBlockIndex, ref indexBlock, ref leftIndexSibling, ref rightIndexSibling);
                 if (!indexShift) Merge(indexBlockParent, indexBlockIndex, ref indexBlock, ref leftIndexSibling, ref rightIndexSibling);
                 _factory.WriteBlock(indexBlockParent);
