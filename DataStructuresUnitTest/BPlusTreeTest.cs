@@ -166,11 +166,12 @@ namespace DataStructuresUnitTest
         [TestMethod]
         public void RandomInsertRemoveTest()
         {
-            var reps = 1;
-            var numInsertions = 1_00;
+            var reps = 20;
+            var numInsertions = 1_000;
             for (var rep = 0; rep < reps; rep++)
             {
-                var blockSize = 6 + rep;
+                Console.WriteLine($"Rep: {rep}\n");
+                var blockSize = 5 + rep;
                 var rand = new Random(blockSize);
                 var testFile = $"{DateTime.Now.Ticks}.bin";
                 var tree = new BPlusTree<WritableInt, WritableInt>(blockSize, testFile);
@@ -193,12 +194,12 @@ namespace DataStructuresUnitTest
                     try
                     {
                         var val = removeItem.Value;
-                        if (val == 74)
+                        if (blockSize == 16 && val == 54)
                         {
                             var e = removeItems.Select(i => i.Value).ToList();
                             e.Sort();
-                            Console.WriteLine(string.Join(",", e));
-                            return;
+                            //Console.WriteLine(string.Join(",", e));
+                            //return;
                         }
                         tree.Remove(removeItem);
                     }

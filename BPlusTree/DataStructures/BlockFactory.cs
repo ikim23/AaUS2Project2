@@ -29,10 +29,16 @@ namespace BPlusTree.DataStructures
 
         public void RemoveBlock(IBlock block)
         {
-            Console.WriteLine($"Remove: {block}");
+            //Console.WriteLine("Start:");
+            //Console.WriteLine($"Remove: {block}");
             var lastAddress = _stream.Length - _buffer.Length;
             if (block.Address == lastAddress)
             {
+                if (_stream.Length == _cb.EmptyAddr)
+                {
+                    _cb.EmptyAddr = lastAddress;
+                    WriteBlock(_cb);
+                }
                 // remove data block at the end of file
                 _stream.SetLength(lastAddress);
                 // remove all following empty blocks
@@ -42,6 +48,7 @@ namespace BPlusTree.DataStructures
                     var lastBlock = ReadBlock(lastAddress);
                     if (lastBlock.GetType() != typeof(EmptyBlock)) break;
                     var lastFree = (EmptyBlock)lastBlock;
+                    //Console.WriteLine($"Loop remove: {lastFree}");
                     if (lastFree.PrevAddr != long.MinValue)
                     {
                         var prev = (EmptyBlock)ReadBlock(lastFree.PrevAddr);
@@ -54,9 +61,20 @@ namespace BPlusTree.DataStructures
                         next.PrevAddr = lastFree.PrevAddr;
                         WriteBlock(next);
                     }
-                    if (lastFree.PrevAddr == long.MinValue && lastFree.NextAddr == long.MinValue)
-                    { // no more empty blocks, new blocks will be appended to end
-                        _cb.EmptyAddr = lastAddress;
+                    if (lastFree.Address == _cb.EmptyAddr)
+                    {
+                        if (lastFree.PrevAddr != long.MinValue)
+                        {
+                            _cb.EmptyAddr = lastFree.PrevAddr;
+                        }
+                        else if (lastFree.NextAddr != long.MinValue)
+                        {
+                            _cb.EmptyAddr = lastFree.NextAddr;
+                        }
+                        else
+                        { // no more empty blocks, new blocks will be appended to end
+                            _cb.EmptyAddr = lastAddress;
+                        }
                         WriteBlock(_cb);
                     }
                     _stream.SetLength(lastAddress);
@@ -82,8 +100,8 @@ namespace BPlusTree.DataStructures
                 WriteBlock(newFree);
                 WriteBlock(_cb);
             }
-            Console.WriteLine($"Cntrol: {_cb}");
-            Console.WriteLine($"Lenght: {_stream.Length}\n");
+            //Console.WriteLine($"Cntrol: {_cb}");
+            //Console.WriteLine($"Lenght: {_stream.Length}\nEnd\n");
         }
 
         public IBlock ReadBlock(long addr = 0)
@@ -112,7 +130,7 @@ namespace BPlusTree.DataStructures
             WriteBlock(_cb);
             return freeAddr;
         }
-        
+
         public void WriteBlock(IBlock block)
         {
             var buffer = block.GetBytes();
