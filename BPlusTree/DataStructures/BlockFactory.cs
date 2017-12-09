@@ -159,6 +159,14 @@ namespace BPlusTree.DataStructures
             throw new ArgumentNullException($"Missing implementation of {nameof(IBlock)} with Type: {_blockType.Value}");
         }
 
+        public void Clear()
+        {
+            _cb.RootAddr = long.MinValue;
+            _cb.EmptyAddr = ControlBlockByteSize;
+            WriteBlock(_cb);
+            _stream.SetLength(_cb.EmptyAddr);
+        }
+
         public void Dispose() => _stream.Dispose();
     }
 }

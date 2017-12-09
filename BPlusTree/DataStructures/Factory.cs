@@ -9,7 +9,7 @@ namespace BPlusTree.DataStructures
     {
         public static IBlockFactory Create(string file, int dataBlockRecordSize = 0, Type keyType = null, Type valueType = null)
         {
-            if (keyType == null && valueType == null) return new Factory(file);
+            if (File.Exists(file)) return new Factory(file);
             return new Factory(file, dataBlockRecordSize, keyType, valueType);
         }
 

@@ -75,6 +75,8 @@ namespace BPlusTree.Blocks
 
         public TK MinKey() => _records.MinKey();
 
+        public void Update(TK key, TV value) => _records.Update(key, value);
+
         public byte[] GetBytes() => ByteUtils.Join(_type, _nextBlock, _records);
 
         public void FromBytes(byte[] bytes, int index = 0) => ByteUtils.FromBytes(bytes, index + _type.ByteSize, _nextBlock, _records);
