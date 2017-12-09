@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataStructuresUnitTest", "D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BPlusTreeVisualizer", "BPlusTreeVisualizer\BPlusTreeVisualizer.csproj", "{E4141562-CB06-4416-A6A0-81DDC7C3B844}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PersonalHealthRecordUI", "PersonalHealthRecordUI\PersonalHealthRecordUI.csproj", "{F35934FC-74B2-4D97-8149-3CC33D45396C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PersonalHealthRecord", "PersonalHealthRecord\PersonalHealthRecord.csproj", "{B90B9418-9E11-4F99-A9B2-B9C5422B9434}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
