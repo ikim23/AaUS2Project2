@@ -15,52 +15,35 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
         <Label Grid.Row="0" Grid.Column="0"
-               Style="{StaticResource Margin}">Key Class:</Label>
-        <ComboBox Grid.Row="0" Grid.Column="1"
-                  Style="{StaticResource Margin}"
-                  Name="KeyCombo"/>
-
-        <Label Grid.Row="0" Grid.Column="2"
                Style="{StaticResource Margin}">File:</Label>
-        <TextBox Grid.Row="0" Grid.Column="3"
+        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
                  Style="{StaticResource Margin}"
+                 IsEnabled="False"
                  Name="FileText"/>
+        <Button Grid.Row="0" Grid.Column="3"
+                Style="{StaticResource Margin}"
+                Name="OpenBtn"
+                Click="OpenClick">Open</Button>
 
         <Label Grid.Row="1" Grid.Column="0"
-               Style="{StaticResource Margin}">Value Class:</Label>
-        <ComboBox Grid.Row="1" Grid.Column="1"
-                  Style="{StaticResource Margin}"
-                  Name="ValueCombo"/>
-
-        <Label Grid.Row="1" Grid.Column="2"
-               Style="{StaticResource Margin}">Block Size:</Label>
-        <TextBox Grid.Row="1" Grid.Column="3"
-                 Style="{StaticResource Margin}"
-                 Name="BlockSizeText"/>
-
-        <Label Grid.Row="2" Grid.Column="0"
                Style="{StaticResource Margin}">Block Index:</Label>
-        <Label Grid.Row="2" Grid.Column="1"
+        <Label Grid.Row="1" Grid.Column="1"
                Style="{StaticResource Margin}"
                Name="BlockIndex"/>
 
-        <StackPanel Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2"
+        <StackPanel Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right">
-            <Button Style="{StaticResource Margin}"
-                    Name="OpenBtn"
-                    Click="OpenClick">Open</Button>
             <Button Style="{StaticResource Margin}"
                     IsEnabled="False"
                     Name="PrevBtn"
@@ -71,7 +54,7 @@
                     Click="NextClick">Next</Button>
         </StackPanel>
 
-        <ScrollViewer Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4"
+        <ScrollViewer Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4"
                       Name="Panel"/>
     </Grid>
 </Window>

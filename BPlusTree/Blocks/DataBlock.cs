@@ -15,7 +15,8 @@ namespace BPlusTree.Blocks
 
         public long Address { get; set; }
         public int ByteSize => ByteUtils.ByteSize(_type, _nextBlock, _records);
-        public int FillFactor => (int) (Math.Ceiling((double) _records.MaxSize / 2) - 1);
+        public int FillFactor => Math.Max((int)(Math.Ceiling((double)_records.MaxSize / 2) - 1), 1);
+        public int Count => _records.Count;
         public int MaxSize => _records.MaxSize;
         public long NextBlock
         {
@@ -32,7 +33,7 @@ namespace BPlusTree.Blocks
             _records = new SortedBlock<TK, TV>(size);
         }
 
-        public DataBlock(int size, IEnumerable<Tuple<TK,TV>> items)
+        public DataBlock(int size, IEnumerable<Tuple<TK, TV>> items)
         {
             Address = long.MinValue;
             _records = new SortedBlock<TK, TV>(size, items);
