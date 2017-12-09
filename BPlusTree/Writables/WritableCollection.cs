@@ -1,28 +1,28 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BPlusTree.Writables
 {
     public class WritableCollection<T> : IWritable, IEnumerable<T> where T : IWritable, new()
     {
         public int ByteSize { get; }
-        public int Length { get; }
         public int Count { get; set; }
+        public int Length => _value.Length;
         private readonly T[] _value;
 
         public WritableCollection(int length)
         {
             ByteSize = sizeof(int) + length * new T().ByteSize;
-            Length = length;
-            _value = new T[length + 1];
+            _value = new T[length];
         }
 
         public void Add(T item) => _value[Count++] = item;
 
         public T Get(int i) => _value[i];
 
-        public IEnumerator<T> GetEnumerator() => ((IEnumerable<T>) _value).GetEnumerator();
+        public IEnumerator<T> GetEnumerator() => _value.Take(Count).GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 

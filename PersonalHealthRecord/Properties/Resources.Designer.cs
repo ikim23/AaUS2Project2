@@ -9,6 +9,7 @@
 //------------------------------------------------------------------------------
 
 namespace PersonalHealthRecord.Properties {
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -54,55 +55,6 @@ namespace PersonalHealthRecord.Properties {
             }
             set {
                 resourceCulture = value;
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Ann Arbor
-        ///Baton Rouge
-        ///Broken Arrow
-        ///Cape Coral
-        ///Cedar Rapids
-        ///Charleston
-        ///Chula Vista
-        ///College Station
-        ///Colorado Springs
-        ///Columbia
-        ///Coral Springs
-        ///Corpus Christi
-        ///Costa Mesa
-        ///Daly City
-        ///Des Moines
-        ///El Cajon
-        ///Elizabeth
-        ///Elk Grove
-        ///El Monte
-        ///El Paso
-        ///Fargo
-        ///Fort Collins
-        ///Fort Lauderdale
-        ///Fort Wayne
-        ///Fort Worth
-        ///Garden Grove
-        ///Grand Prairie
-        ///Grand Rapids
-        ///Green Bay
-        ///High Point
-        ///Huntington Beach
-        ///Jersey City
-        ///Jurupa Valley
-        ///Kansas City
-        ///Las Cruces
-        ///Las Vegas
-        ///League City
-        ///Little Rock
-        ///Long Beach
-        ///Los Angeles
-        /// [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string City {
-            get {
-                return ResourceManager.GetString("City", resourceCulture);
             }
         }
         
@@ -174,30 +126,6 @@ namespace PersonalHealthRecord.Properties {
         internal static string FirstName {
             get {
                 return ResourceManager.GetString("FirstName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to VZP
-        ///Union
-        ///Socialna poistovna
-        ///Wustenrot
-        ///Kooperativa
-        ///Generali
-        ///CSOB
-        ///AXA
-        ///Allianz
-        ///AEGON
-        ///ASTRA
-        ///NOVIS
-        ///Komunalna poistovna
-        ///UNIQA
-        ///MetLife
-        ///.
-        /// </summary>
-        internal static string InsuranceAgencyCode {
-            get {
-                return ResourceManager.GetString("InsuranceAgencyCode", resourceCulture);
             }
         }
         

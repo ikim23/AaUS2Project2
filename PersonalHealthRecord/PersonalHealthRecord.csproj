@@ -32,12 +32,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ServiceStack.Text, Version=4.5.14.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ServiceStack.Text.4.5.14\lib\net45\ServiceStack.Text.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,13 +42,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataSaver.cs" />
-    <Compile Include="DateFormatter.cs" />
     <Compile Include="Generator\DataGenerator.cs" />
     <Compile Include="Generator\RandomValue.cs" />
-    <Compile Include="Model\Hospital.cs" />
-    <Compile Include="Model\Hospitalization.cs" />
     <Compile Include="ISystem.cs" />
+    <Compile Include="Model\Hospitalization.cs" />
+    <Compile Include="Model\Mapper.cs" />
     <Compile Include="Model\Patient.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -68,28 +62,23 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DataStructures\DataStructures.csproj">
-      <Project>{246513D0-CED4-4403-93FD-F39156489623}</Project>
-      <Name>DataStructures</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\City.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\FirstName.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\InsuranceAgencyCode.txt" />
+    <None Include="Resources\LastName.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\LastName.txt" />
+    <ProjectReference Include="..\BPlusTree\BPlusTree.csproj">
+      <Project>{29c08f44-baed-4523-8756-3464a6df94b1}</Project>
+      <Name>BPlusTree</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

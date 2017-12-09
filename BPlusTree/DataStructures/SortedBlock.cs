@@ -88,6 +88,13 @@ namespace BPlusTree.DataStructures
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public override string ToString() => string.Join(",", this);
+
+        public void Update(TK key, TV value)
+        {
+            var item = new SortedBlockItem<TK, TV>(key, value);
+            var index = _items.FindInsertionIndex(item);
+            _items.Update(index, item);
+        }
     }
 
     internal class SortedBlockItem<TK, TV> : IComparable<SortedBlockItem<TK, TV>>, IWritable where TK : IComparable<TK>, IWritable, new() where TV : IWritable, new()

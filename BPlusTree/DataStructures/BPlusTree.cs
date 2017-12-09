@@ -20,6 +20,13 @@ namespace BPlusTree.DataStructures
             return dataBlock.Find(key);
         }
 
+        public void Update(TK key, TV value)
+        {
+            var dataBlock = FindDataBlock(key);
+            dataBlock.Update(key, value);
+            _factory.WriteBlock(dataBlock);
+        }
+
         private DataBlock<TK, TV> FindDataBlock(TK key)
         {
             var block = _factory.GetRoot();
@@ -371,6 +378,28 @@ namespace BPlusTree.DataStructures
                 nextAddress = dataBlock.NextBlock;
             } while (nextAddress != long.MinValue);
         }
+
+        public IEnumerable<TV> GetInterval(TK from, TK to)
+        {
+            var block = _factory.GetRoot();
+            if (block == null) yield break;
+            while (block is IndexBlock<TK>)
+            {
+                var indexBlock = (IndexBlock<TK>)block;
+                var childAddress = indexBlock.MinAddress();
+                block = _factory.ReadBlock(childAddress);
+            }
+            var nextAddress = block.Address;
+            do
+            {
+                block = _factory.ReadBlock(nextAddress);
+                var dataBlock = (DataBlock<TK, TV>)block;
+                foreach (var value in dataBlock)
+                    yield return value;
+                nextAddress = dataBlock.NextBlock;
+            } while (nextAddress != long.MinValue);
+        }
+
 
         public void Dispose() => _factory.Dispose();
     }

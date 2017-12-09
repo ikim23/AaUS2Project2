@@ -4,15 +4,13 @@ namespace PersonalHealthRecord.Model
 {
     internal class Mapper
     {
-        public static string FormatDate(DateTime? date) => date != null ? $"{date:dd.MM.yyyy}" : "";
-
         public static string[] FromPatient(Patient patient)
         {
             return new[]
             {
                 patient.FirstName,
                 patient.LastName,
-                FormatDate(patient.Birthday),
+                DateFormatter.Format(patient.Birthday),
                 patient.CardId.ToString()
             };
         }
@@ -32,8 +30,8 @@ namespace PersonalHealthRecord.Model
         {
             return new[]
             {
-                FormatDate(hospitalization.Start),
-                FormatDate(hospitalization.End),
+                DateFormatter.Format(hospitalization.Start),
+                DateFormatter.Format(hospitalization.End),
                 hospitalization.Diagnosis
             };
         }
