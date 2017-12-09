@@ -5,33 +5,61 @@ using BPlusTree.Writables;
 
 namespace BPlusTree.DataStructures
 {
-    public class BlockFactory<TK, TV> : IBlockFactory where TK : IComparable<TK>, IWritable, new() where TV : IWritable, new()
+    public class Factory : IBlockFactory
     {
+        public static IBlockFactory Create(string file, int dataBlockRecordSize = 0, Type keyType = null, Type valueType = null)
+        {
+            if (keyType == null && valueType == null) return new Factory(file);
+            return new Factory(file, dataBlockRecordSize, keyType, valueType);
+        }
+
         public int ControlBlockByteSize => _cb.ByteSize;
         public int BlockByteSize { get; }
-        public int DataBlockRecordSize { get; }
+        public int DataBlockRecordSize => _cb.DataBlockRecordSize;
         private readonly ControlBlock _cb = new ControlBlock();
         private readonly WritableChar _blockType = new WritableChar();
         private readonly FileStream _stream;
         private readonly byte[] _buffer;
 
-        public BlockFactory(int dataBlockRecordSize, string file)
+        private Factory(string file)
         {
-            BlockByteSize = new DataBlock<TK, TV>(dataBlockRecordSize).ByteSize;
-            DataBlockRecordSize = dataBlockRecordSize;
+            // read control block
+            _stream = new FileStream(file, FileMode.Open);
+            var buffer = new byte[_cb.ByteSize];
+            _stream.Seek(0, SeekOrigin.Begin);
+            _stream.Read(buffer, 0, buffer.Length);
+            _cb.FromBytes(buffer);
+            BlockByteSize = DataBlock().ByteSize;
             _buffer = new byte[BlockByteSize];
-            var exists = File.Exists(file);
-            _stream = new FileStream(file, FileMode.OpenOrCreate);
-            if (!exists) WriteBlock(_cb);
-            else _cb = (ControlBlock)ReadBlock();
+        }
+
+        private Factory(string file, int dataBlockRecordSize, Type keyType, Type valueType)
+        {
+            // create control block
+            _cb.KeyType = keyType;
+            _cb.ValueType = valueType;
+            _cb.DataBlockRecordSize = dataBlockRecordSize;
+            _stream = new FileStream(file, FileMode.Create);
+            var buffer = _cb.GetBytes();
+            _stream.Seek(0, SeekOrigin.Begin);
+            _stream.Write(buffer, 0, buffer.Length);
+            BlockByteSize = DataBlock().ByteSize;
+            _buffer = new byte[BlockByteSize];
         }
 
         public IBlock GetRoot() => _cb.RootAddr == long.MinValue ? null : ReadBlock(_cb.RootAddr);
 
+        public bool IsRoot(long addr) => _cb.RootAddr == addr;
+
+        public void SetRoot(long addr)
+        {
+            _cb.RootAddr = addr;
+            WriteBlock(_cb);
+        }
+
         public void RemoveBlock(IBlock block)
         {
-            //Console.WriteLine("Start:");
-            //Console.WriteLine($"Remove: {block}");
+            //Console.WriteLine($"\nR: {block}");
             var lastAddress = _stream.Length - _buffer.Length;
             if (block.Address == lastAddress)
             {
@@ -44,12 +72,11 @@ namespace BPlusTree.DataStructures
                 _stream.SetLength(lastAddress);
                 // remove all following empty blocks
                 lastAddress -= _buffer.Length;
-                while (lastAddress > 0)
+                while (lastAddress > _cb.ByteSize)
                 {
                     var lastBlock = ReadBlock(lastAddress);
                     if (lastBlock.GetType() != typeof(EmptyBlock)) break;
                     var lastFree = (EmptyBlock)lastBlock;
-                    //Console.WriteLine($"Loop remove: {lastFree}");
                     if (lastFree.PrevAddr != long.MinValue)
                     {
                         var prev = (EmptyBlock)ReadBlock(lastFree.PrevAddr);
@@ -101,12 +128,20 @@ namespace BPlusTree.DataStructures
                 WriteBlock(newFree);
                 WriteBlock(_cb);
             }
-            //Console.WriteLine($"Cntrol: {_cb}");
-            //Console.WriteLine($"Lenght: {_stream.Length}\nEnd\n");
+            //Console.WriteLine($"\nE: {_cb}");
         }
 
         public IBlock ReadBlock(long addr = 0)
         {
+            if (addr == 0)
+            {
+                var buff = new byte[_cb.ByteSize];
+                _stream.Seek(addr, SeekOrigin.Begin);
+                _stream.Read(buff, 0, buff.Length);
+                var b = new ControlBlock();
+                b.FromBytes(buff);
+                return b;
+            }
             _stream.Seek(addr, SeekOrigin.Begin);
             _stream.Read(_buffer, 0, _buffer.Length);
             _blockType.FromBytes(_buffer);
@@ -114,6 +149,17 @@ namespace BPlusTree.DataStructures
             block.FromBytes(_buffer);
             block.Address = addr;
             return block;
+        }
+
+        public void WriteBlock(IBlock block)
+        {
+            if (block is ControlBlock && _cb.EmptyAddr < 0)
+            {
+                throw new Exception("empty address lower than 0");
+            }
+            var buffer = block.GetBytes();
+            _stream.Seek(block.Address, SeekOrigin.Begin);
+            _stream.Write(buffer, 0, buffer.Length);
         }
 
         public long GetFreeAddress()
@@ -126,39 +172,51 @@ namespace BPlusTree.DataStructures
             else
             {
                 var free = (EmptyBlock)ReadBlock(_cb.EmptyAddr);
-                _cb.EmptyAddr = free.NextAddr;
+                if (free.NextAddr != long.MinValue)
+                {
+                    _cb.EmptyAddr = free.NextAddr;
+                }
+                else if (free.PrevAddr != long.MinValue)
+                {
+                    _cb.EmptyAddr = free.PrevAddr;
+                }
+                else
+                {
+                    _cb.EmptyAddr = _stream.Length;
+                }
             }
             WriteBlock(_cb);
             return freeAddr;
         }
 
-        public void WriteBlock(IBlock block)
-        {
-            var buffer = block.GetBytes();
-            _stream.Seek(block.Address, SeekOrigin.Begin);
-            _stream.Write(buffer, 0, buffer.Length);
-        }
-
-        public void SetRoot(long addr)
-        {
-            _cb.RootAddr = addr;
-            WriteBlock(_cb);
-        }
-
-        public bool IsRoot(long addr) => _cb.RootAddr == addr;
-
-        public long Length() => _stream.Length;
-
         private IBlock InitBlock(byte[] buffer)
         {
             _blockType.FromBytes(buffer);
-            if (_blockType.Value == IndexBlock<TK>.Type) return new IndexBlock<TK>(BlockByteSize);
-            if (_blockType.Value == DataBlock<TK, TV>.Type) return new DataBlock<TK, TV>(DataBlockRecordSize);
+            if (_blockType.Value == 'I') return IndexBlock();
+            if (_blockType.Value == 'D') return DataBlock();
             if (_blockType.Value == EmptyBlock.Type) return new EmptyBlock();
             if (_blockType.Value == ControlBlock.Type) return new ControlBlock();
             throw new ArgumentNullException($"Missing implementation of {nameof(IBlock)} with Type: {_blockType.Value}");
         }
 
+        private IBlock DataBlock()
+        {
+            var blockType = typeof(DataBlock<,>).MakeGenericType(_cb.KeyType, _cb.ValueType);
+            var dataBlock = (IBlock)Activator.CreateInstance(blockType, DataBlockRecordSize);
+            return dataBlock;
+        }
+
+        private IBlock IndexBlock()
+        {
+            var blockType = typeof(IndexBlock<>).MakeGenericType(_cb.KeyType);
+            var indexBlock = (IBlock)Activator.CreateInstance(blockType, BlockByteSize);
+            return indexBlock;
+        }
+
+        public long Length() => _stream.Length;
+
         public void Dispose() => _stream.Dispose();
     }
+
+
 }

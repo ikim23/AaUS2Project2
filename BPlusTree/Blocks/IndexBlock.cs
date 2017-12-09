@@ -14,6 +14,7 @@ namespace BPlusTree.Blocks
         public long Address { get; set; }
         public int ByteSize { get; }
         public int FillFactor => Math.Max((int)(Math.Ceiling((double)_keys.MaxSize / 2) - 1), 1);
+        public int Count => _keys.Count;
         private readonly WritableChar _type = new WritableChar(Type);
         private SortedIndex<TK> _keys;
         private readonly WritableArray<WritableLong> _children;
