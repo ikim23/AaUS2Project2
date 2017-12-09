@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace BPlusTree.Writables
 {
-    internal class ByteUtils
+    public class ByteUtils
     {
         public static int ByteSize(params IWritable[] writables) => writables.Sum(w => w.ByteSize);
 
