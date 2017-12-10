@@ -18,7 +18,7 @@ namespace BPlusTree.DataStructures
             _items = new SortedIndex<SortedBlockItem<TK, TV>>(size);
         }
 
-        public SortedBlock(int size, IEnumerable<Tuple<TK,TV>> items) : this(size)
+        public SortedBlock(int size, IEnumerable<Tuple<TK, TV>> items) : this(size)
         {
             foreach (var tuple in items) Insert(tuple.Item1, tuple.Item2);
         }
@@ -82,6 +82,8 @@ namespace BPlusTree.DataStructures
         public byte[] GetBytes() => _items.GetBytes();
 
         public void FromBytes(byte[] bytes, int index = 0) => _items.FromBytes(bytes, index);
+
+        public IEnumerator<Tuple<TK, TV>> GetKeyValueEnumerator() => _items.Select(i => Tuple.Create(i.Key, i.Value)).GetEnumerator();
 
         public IEnumerator<TV> GetEnumerator() => _items.Select(i => i.Value).GetEnumerator();
 

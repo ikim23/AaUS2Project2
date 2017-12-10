@@ -386,7 +386,7 @@ namespace BPlusTree.DataStructures
             while (block is IndexBlock<TK>)
             {
                 var indexBlock = (IndexBlock<TK>)block;
-                var childAddress = indexBlock.MinAddress();
+                var childAddress = indexBlock.Find(from);
                 block = _factory.ReadBlock(childAddress);
             }
             var nextAddress = block.Address;
@@ -394,12 +394,20 @@ namespace BPlusTree.DataStructures
             {
                 block = _factory.ReadBlock(nextAddress);
                 var dataBlock = (DataBlock<TK, TV>)block;
-                foreach (var value in dataBlock)
-                    yield return value;
+                using (var en = dataBlock.GetKeyValueEnumerator())
+                {
+                    while (en.MoveNext())
+                    {
+                        var tuple = en.Current;
+                        if (tuple == null) yield break;
+                        if (from.CompareTo(tuple.Item1) > 0) continue;
+                        if (to.CompareTo(tuple.Item1) < 0) yield break;
+                        yield return tuple.Item2;
+                    }
+                }
                 nextAddress = dataBlock.NextBlock;
             } while (nextAddress != long.MinValue);
         }
-
 
         public void Dispose() => _factory.Dispose();
     }

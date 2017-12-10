@@ -3,7 +3,7 @@ using BPlusTree.Writables;
 
 namespace PersonalHealthRecord.Model
 {
-    public class Hospitalization : IWritable
+    internal class Hospitalization : IWritable
     {
         public int ByteSize => ByteUtils.ByteSize(_start, _end, _diagnosis);
         public DateTime Start

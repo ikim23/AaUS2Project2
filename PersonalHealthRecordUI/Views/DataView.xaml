@@ -16,6 +16,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -26,30 +27,40 @@
         <!-- Row 0 -->
         <Label Grid.Row="0" Grid.Column="0"
                Style="{StaticResource Padding}"
-               Content="Patients:"/>
+               Content="Records/Data Block:"/>
         <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
                  Style="{StaticResource Padding}"
-                 x:Name="PatientsCount"/>
+                 x:Name="BlockSize"/>
         
         <!-- Row 1 -->
         <Label Grid.Row="1" Grid.Column="0"
                Style="{StaticResource Padding}"
-               Content="Hospitalizations:"/>
+               Content="Patients:"/>
         <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
                  Style="{StaticResource Padding}"
-                 x:Name="RecordsCount"/>
-
+                 x:Name="PatientsCount"/>
+        
         <!-- Row 2 -->
         <Label Grid.Row="2" Grid.Column="0"
                Style="{StaticResource Padding}"
-               Content="Ongoing hospitalizations:"/>
+               Content="Hospitalizations:"/>
         <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
+                 Style="{StaticResource Padding}"
+                 x:Name="RecordsCount"/>
+
+        <!-- Row 3 -->
+        <Label Grid.Row="3" Grid.Column="0"
+               Style="{StaticResource Padding}"
+               Content="Ongoing hospitalizations:"/>
+        <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"
                  Style="{StaticResource Padding}"
                  x:Name="OngoingRecordsCount"/>
         
-        <!-- Row 3 -->
-        <Button Grid.Row="3" Grid.Column="2" 
-                Style="{StaticResource Padding}" Width="80"
+        <!-- Row 4 -->
+        <Button Grid.Row="4" Grid.Column="2" 
+                Style="{StaticResource Padding}"
+                Width="80"
+                Height="25"
                 Content="Generate"
                 x:Name="Generate"/>
     </Grid>

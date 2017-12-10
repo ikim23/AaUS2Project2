@@ -3,7 +3,7 @@ using BPlusTree.Writables;
 
 namespace PersonalHealthRecord.Model
 {
-    public class Patient : IWritable
+    internal class Patient : IWritable
     {
         public int ByteSize => ByteUtils.ByteSize(_firstName, _lastName, _birthday, _cardId, Hospitalizations);
         public string FirstName
