@@ -98,6 +98,10 @@
       <Project>{29c08f44-baed-4523-8756-3464a6df94b1}</Project>
       <Name>BPlusTree</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PersonalHealthRecord\PersonalHealthRecord.csproj">
+      <Project>{b90b9418-9e11-4f99-a9b2-b9c5422b9434}</Project>
+      <Name>PersonalHealthRecord</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

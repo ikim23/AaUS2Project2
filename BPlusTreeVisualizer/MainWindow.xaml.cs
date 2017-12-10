@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using BPlusTree.Blocks;
 using BPlusTree.DataStructures;
@@ -20,8 +21,7 @@ namespace BPlusTreeVisualizer
             var dialog = new OpenFileDialog
             {
                 Filter = "Binary files (*.bin)|*.bin",
-                InitialDirectory = @"C:\Users\ikim23\source\repos\AaUS2Project2\DataStructuresUnitTest\bin\Debug"
-                //InitialDirectory = AppDomain.CurrentDomain.BaseDirectory
+                InitialDirectory = AppDomain.CurrentDomain.BaseDirectory
             };
             var result = dialog.ShowDialog();
             if (result != null && result.Value)
@@ -32,10 +32,22 @@ namespace BPlusTreeVisualizer
                     _swiper = new BlockSwiper(file);
                     Panel.Content = _swiper.Current();
                     BlockIndex.Content = $"{_swiper.BlockIndex}/{_swiper.MaxIndex}";
-                    PrevBtn.IsEnabled = true;
-                    NextBtn.IsEnabled = true;
+                    JumpText.IsEnabled = PrevBtn.IsEnabled = NextBtn.IsEnabled = true;
                 }
             }
+        }
+
+        private void JumpTextChanged(object sender, RoutedEventArgs e)
+        {
+            var isNumber = int.TryParse(JumpText.Text, out var result);
+            JumpBtn.IsEnabled = isNumber && result >= 0 && result <= _swiper.MaxIndex;
+        }
+
+        private void JumpClick(object sender, RoutedEventArgs e)
+        {
+            var index = int.Parse(JumpText.Text);
+            Panel.Content = _swiper.Jump(index);
+            BlockIndex.Content = $"{_swiper.BlockIndex}/{_swiper.MaxIndex}";
         }
 
         private void PrevClick(object sender, RoutedEventArgs e)
@@ -69,6 +81,15 @@ namespace BPlusTreeVisualizer
         }
 
         public Grid Current() => CurrentBlock.CreateGrid();
+
+        public Grid Jump(int index)
+        {
+            BlockIndex = index;
+            if (BlockIndex == 0) CurrentAddress = 0;
+            else CurrentAddress = Factory.ControlBlockByteSize + BlockIndex * Factory.BlockByteSize;
+            CurrentBlock = Factory.ReadBlock(CurrentAddress);
+            return CurrentBlock.CreateGrid();
+        }
 
         public Grid Next()
         {
