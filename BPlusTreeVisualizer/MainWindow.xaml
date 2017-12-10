@@ -32,6 +32,7 @@
                  Name="FileText"/>
         <Button Grid.Row="0" Grid.Column="3"
                 Style="{StaticResource Margin}"
+                Width="60"
                 Name="OpenBtn"
                 Click="OpenClick">Open</Button>
 
@@ -44,11 +45,25 @@
         <StackPanel Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right">
+            <Label VerticalAlignment="Center"
+                   Content="Jump to:"/>
+            <TextBox Style="{StaticResource Margin}"
+                     Width="60"
+                     IsEnabled="False"
+                     Name="JumpText"
+                     TextChanged="JumpTextChanged"/>
             <Button Style="{StaticResource Margin}"
+                    Width="60"
+                    IsEnabled="False"
+                    Name="JumpBtn"
+                    Click="JumpClick">Jump</Button>
+            <Button Style="{StaticResource Margin}"
+                    Width="60"
                     IsEnabled="False"
                     Name="PrevBtn"
                     Click="PrevClick">Previous</Button>
             <Button Style="{StaticResource Margin}"
+                    Width="60"
                     IsEnabled="False"
                     Name="NextBtn"
                     Click="NextClick">Next</Button>
