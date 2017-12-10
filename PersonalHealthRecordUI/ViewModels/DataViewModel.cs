@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using Caliburn.Micro;
 using PersonalHealthRecordUI.Logic;
 
@@ -13,17 +14,25 @@ namespace PersonalHealthRecordUI.ViewModels
             DisplayName = "Data";
         }
 
-        public bool CanGenerate(int patientsCount, int recordsCount, int ongoingRecordsCount)
+        public bool CanGenerate(int blockSize, int patientsCount, int recordsCount, int ongoingRecordsCount)
         {
-            return patientsCount > 0 &&
+            return blockSize >= 3 &&
+                patientsCount > 0 &&
                 recordsCount > 0 &&
                 ongoingRecordsCount <= patientsCount;
         }
 
-        public void Generate(int patientsCount, int recordsCount, int ongoingRecordsCount)
+        public void Generate(int blockSize, int patientsCount, int recordsCount, int ongoingRecordsCount)
         {
-            _api.Generate(patientsCount, recordsCount, ongoingRecordsCount);
-            MessageBox.Show("Done!");
+            try
+            {
+                _api.Generate(blockSize, patientsCount, recordsCount, ongoingRecordsCount);
+                MessageBox.Show("Done!");
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
     }
 }

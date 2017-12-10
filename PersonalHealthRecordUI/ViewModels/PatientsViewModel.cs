@@ -1,4 +1,6 @@
-﻿using System.Dynamic;
+﻿using System;
+using System.Dynamic;
+using System.Windows;
 using Caliburn.Micro;
 using PersonalHealthRecordUI.Logic;
 using PersonalHealthRecordUI.Models;
@@ -32,8 +34,15 @@ namespace PersonalHealthRecordUI.ViewModels
 
         public void OnPatientAdd(PatientModel patient)
         {
-            _api.AddPatient(patient);
-            RefreshPatients();
+            try
+            {
+                _api.AddPatient(patient);
+                RefreshPatients();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
 
         public void OnPatientDoubleClick()
@@ -46,8 +55,15 @@ namespace PersonalHealthRecordUI.ViewModels
 
         public void OnPatientEdit(PatientModel patient)
         {
-            _api.UpdatePatient(patient);
-            RefreshPatients();
+            try
+            {
+                _api.UpdatePatient(patient);
+                RefreshPatients();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
 
         private void RefreshPatients()

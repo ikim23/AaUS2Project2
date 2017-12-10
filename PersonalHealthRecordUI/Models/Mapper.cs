@@ -1,25 +1,16 @@
-﻿using System;
-using System.Globalization;
+﻿using PersonalHealthRecord.Model;
 
 namespace PersonalHealthRecordUI.Models
 {
     internal class Mapper
     {
-        public static DateTime Parse(string date) => DateTime.ParseExact(date, "dd.MM.yyyy", CultureInfo.InvariantCulture);
-
-        public static DateTime? ParseOrNull(string date)
-        {
-            if (string.IsNullOrEmpty(date)) return null;
-            return DateTime.ParseExact(date, "dd.MM.yyyy", CultureInfo.InvariantCulture);
-        }
-
         public static PatientModel ToPatientModel(string[] args)
         {
             return new PatientModel
             {
                 FirstName = args[0],
                 LastName = args[1],
-                Birthday = Parse(args[2]),
+                Birthday = DateFormatter.Parse(args[2]),
                 CardId = int.Parse(args[3])
             };
         }
@@ -28,8 +19,8 @@ namespace PersonalHealthRecordUI.Models
         {
             return new HospitalizationModel
             {
-                StartDate = Parse(args[0]),
-                EndDate = ParseOrNull(args[1]),
+                StartDate = DateFormatter.Parse(args[0]),
+                EndDate = DateFormatter.ParseOrNull(args[1]),
                 Diagnosis = args[2]
             };
         }

@@ -58,9 +58,9 @@
                       cal:Message.Attach="[Event MouseDoubleClick] = [Action OnHospitalizationDoubleClick()]">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Start" DisplayMemberBinding="{Binding StartDate, StringFormat='d', ConverterCulture=sk-SK}"/>
-                        <GridViewColumn Header="End" DisplayMemberBinding="{Binding EndDate, StringFormat='d', ConverterCulture=sk-SK}"/>
-                        <GridViewColumn Header="Diagnosis" DisplayMemberBinding="{Binding Diagnosis}"/>
+                        <GridViewColumn Header="Start" Width="80" DisplayMemberBinding="{Binding StartDate, StringFormat='d', ConverterCulture=sk-SK}"/>
+                        <GridViewColumn Header="End" Width="80" DisplayMemberBinding="{Binding EndDate, StringFormat='d', ConverterCulture=sk-SK}"/>
+                        <GridViewColumn Header="Diagnosis" Width="240"  DisplayMemberBinding="{Binding Diagnosis}"/>
                     </GridView>
                 </ListView.View>
             </ListView>

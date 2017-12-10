@@ -52,9 +52,9 @@ namespace PersonalHealthRecordUI.Logic
             _sys.EndHospitalization(cardId, end);
         }
 
-        public void Generate(int patientsCount, int recordsCount, int ongoingRecordsCount)
+        public void Generate(int blockSize, int patientsCount, int recordsCount, int ongoingRecordsCount)
         {
-            _sys.Generate(patientsCount, recordsCount, ongoingRecordsCount);
+            _sys.Generate(blockSize, patientsCount, recordsCount, ongoingRecordsCount);
         }
     }
 }

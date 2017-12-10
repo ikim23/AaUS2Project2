@@ -21,6 +21,6 @@ namespace PersonalHealthRecord
         void RemovePatient(int cardId);
 
         IEnumerable<string[]> GetPatients();
-        void Generate(int patients, int records, int ongoingRecords);
+        void Generate(int blockSize, int patientCount, int recordCount, int ongoingRecordCount);
     }
 }

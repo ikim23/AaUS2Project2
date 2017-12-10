@@ -6,7 +6,6 @@ namespace PersonalHealthRecordUI.Models
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string FullName => $"{FirstName} {LastName}";
         public DateTime Birthday { get; set; }
         public int CardId { get; set; }
     }

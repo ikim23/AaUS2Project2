@@ -11,8 +11,8 @@ namespace PersonalHealthRecord
 {
     public class System : ISystem
     {
-        public static readonly string FilePath = "bptree.bin";
-        private BPlusTree<WritableInt, Patient> _patients = new BPlusTree<WritableInt, Patient>(5, FilePath);
+        public static readonly string PatientsFile = "patients.bin";
+        private BPlusTree<WritableInt, Patient> _patients = new BPlusTree<WritableInt, Patient>(5, PatientsFile);
 
         public IEnumerable<string[]> GetPatients()
         {
@@ -73,21 +73,15 @@ namespace PersonalHealthRecord
             _patients.Remove(new WritableInt(cardId));
         }
 
-        public void Generate(int patients, int records, int ongoingRecords)
+        public void Generate(int blockSize, int patientCount, int recordCount, int ongoingRecordCount)
         {
             _patients.Dispose();
-            File.Delete(FilePath);
-            _patients = new BPlusTree<WritableInt, Patient>(5, FilePath);
-            var generator = new DataGenerator(patients, records, ongoingRecords, this);
-            generator.Generate();
-        }
-
-        public void LoadPatients(IEnumerable<Patient> patients)
-        {
+            File.Delete(PatientsFile);
+            _patients = new BPlusTree<WritableInt, Patient>(blockSize, PatientsFile);
+            var generator = new DataGenerator(patientCount, recordCount, ongoingRecordCount);
+            var patients = generator.Generate();
             foreach (var patient in patients)
-            {
                 _patients.Insert(new WritableInt(patient.CardId), patient);
-            }
         }
     }
 }

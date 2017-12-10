@@ -31,10 +31,10 @@
                 <!-- ^ attach nie je dobre umiestneny -->
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Card ID" DisplayMemberBinding="{Binding CardId}"/>
-                        <GridViewColumn Header="First Name" DisplayMemberBinding="{Binding FirstName}"/>
-                        <GridViewColumn Header="Last Name" DisplayMemberBinding="{Binding LastName}"/>
-                        <GridViewColumn Header="Birthday" DisplayMemberBinding="{Binding Birthday, StringFormat='d', ConverterCulture=sk-SK}"/>
+                        <GridViewColumn Header="Card ID" Width="80" DisplayMemberBinding="{Binding CardId}"/>
+                        <GridViewColumn Header="First Name" Width="100" DisplayMemberBinding="{Binding FirstName}"/>
+                        <GridViewColumn Header="Last Name" Width="100" DisplayMemberBinding="{Binding LastName}"/>
+                        <GridViewColumn Header="Birthday" Width="80" DisplayMemberBinding="{Binding Birthday, StringFormat='d', ConverterCulture=sk-SK}"/>
                     </GridView>
                 </ListView.View>
             </ListView>

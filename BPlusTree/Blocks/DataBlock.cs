@@ -81,6 +81,8 @@ namespace BPlusTree.Blocks
 
         public void FromBytes(byte[] bytes, int index = 0) => ByteUtils.FromBytes(bytes, index + _type.ByteSize, _nextBlock, _records);
 
+        public IEnumerator<Tuple<TK, TV>> GetKeyValueEnumerator() => _records.GetKeyValueEnumerator();
+
         public IEnumerator<TV> GetEnumerator() => _records.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
