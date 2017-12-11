@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows;
 using Caliburn.Micro;
 using PersonalHealthRecord.Generator;
 using PersonalHealthRecordUI.Models;
@@ -13,6 +12,7 @@ namespace PersonalHealthRecordUI.ViewModels
         public DateTime Birthday { get; set; }
         public int CardId { get; set; }
         public bool NewPatient { get; }
+        public bool CanRemove => !NewPatient;
         private readonly IOnPatientViewListener _listener;
 
         public PatientViewModel(IOnPatientViewListener listener)
@@ -45,27 +45,26 @@ namespace PersonalHealthRecordUI.ViewModels
 
         public void Ok(string firstName, string lastName, DateTime birthday, int cardId)
         {
-            try
+            var patient = new PatientModel
             {
-                var patient = new PatientModel
-                {
-                    FirstName = firstName,
-                    LastName = lastName,
-                    Birthday = birthday,
-                    CardId = cardId
-                };
-                if (NewPatient) _listener.OnPatientAdd(patient);
-                else _listener.OnPatientEdit(patient);
-                TryClose();
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
-            }
+                FirstName = firstName,
+                LastName = lastName,
+                Birthday = birthday,
+                CardId = cardId
+            };
+            if (NewPatient) _listener.OnPatientAdd(patient);
+            else _listener.OnPatientEdit(patient);
+            TryClose();
         }
 
         public void Cancel()
         {
+            TryClose();
+        }
+
+        public void Remove()
+        {
+            _listener.OnPatientRemove(CardId);
             TryClose();
         }
     }
@@ -74,5 +73,6 @@ namespace PersonalHealthRecordUI.ViewModels
     {
         void OnPatientAdd(PatientModel patient);
         void OnPatientEdit(PatientModel patient);
+        void OnPatientRemove(int cardId);
     }
 }
