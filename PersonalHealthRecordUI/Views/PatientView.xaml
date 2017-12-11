@@ -74,6 +74,10 @@
                     IsCancel="True"
                     Content="Cancel"
                     x:Name="Cancel"/>
+            <Button Style="{StaticResource Padding}"
+                    Width="60"
+                    Content="Remove"
+                    x:Name="Remove"/>
         </StackPanel>
     </Grid>
 </Window>

@@ -32,6 +32,11 @@ namespace PersonalHealthRecordUI.Logic
             _sys.AddPatient(patient.FirstName, patient.LastName, patient.Birthday, patient.CardId);
         }
 
+        public void RemovePatient(int cardId)
+        {
+            _sys.RemovePatient(cardId);
+        }
+
         public void UpdatePatient(PatientModel patient)
         {
             _sys.UpdatePatient(patient.CardId, patient.FirstName, patient.LastName, patient.Birthday);
