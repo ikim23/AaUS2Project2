@@ -14,6 +14,7 @@ namespace PersonalHealthRecordUI.ViewModels
         public bool NewPatient { get; }
         public bool CanRemove => !NewPatient;
         private readonly IOnPatientViewListener _listener;
+        private readonly int _oldCardId;
 
         public PatientViewModel(IOnPatientViewListener listener)
         {
@@ -32,7 +33,7 @@ namespace PersonalHealthRecordUI.ViewModels
             FirstName = patient.FirstName;
             LastName = patient.LastName;
             Birthday = patient.Birthday;
-            CardId = patient.CardId;
+            _oldCardId = CardId = patient.CardId;
         }
 
         public bool CanOk(string firstName, string lastName, DateTime birthday, int cardId)
@@ -53,7 +54,8 @@ namespace PersonalHealthRecordUI.ViewModels
                 CardId = cardId
             };
             if (NewPatient) _listener.OnPatientAdd(patient);
-            else _listener.OnPatientEdit(patient);
+            else if (_oldCardId == cardId) _listener.OnPatientEdit(patient);
+            else _listener.OnPatientEdit(_oldCardId, patient);
             TryClose();
         }
 
@@ -73,6 +75,7 @@ namespace PersonalHealthRecordUI.ViewModels
     {
         void OnPatientAdd(PatientModel patient);
         void OnPatientEdit(PatientModel patient);
+        void OnPatientEdit(int oldCardId, PatientModel patient);
         void OnPatientRemove(int cardId);
     }
 }

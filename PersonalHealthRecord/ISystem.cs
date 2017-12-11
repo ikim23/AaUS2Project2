@@ -15,6 +15,7 @@ namespace PersonalHealthRecord
         IEnumerable<string[]> GetPatients(int cardIdFrom, int cardIdTo);
         // 5. editacia osobnych udajov pacienta (identifikovany cislom preukazu)
         void UpdatePatient(int cardId, string firstName, string lastName, DateTime birthday);
+        void UpdatePatientWithId(int oldCardId, int cardId, string firstName, string lastName, DateTime birthday);
         // 6. pridanie pacienta
         void AddPatient(string firstName, string lastName, DateTime birthday, int cardId);
         // 7. odstranenie pacienta (identifikovany cislom preukazu)
