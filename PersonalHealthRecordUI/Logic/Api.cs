@@ -42,6 +42,11 @@ namespace PersonalHealthRecordUI.Logic
             _sys.UpdatePatient(patient.CardId, patient.FirstName, patient.LastName, patient.Birthday);
         }
 
+        public void UpdatePatientWithId(int oldCardId, PatientModel patient)
+        {
+            _sys.UpdatePatientWithId(oldCardId, patient.CardId, patient.FirstName, patient.LastName, patient.Birthday);
+        }
+
         public IEnumerable<HospitalizationModel> GetHospitalizations(int cardId)
         {
             return _sys.GetHospitalizations(cardId).Select(Mapper.ToHospitalizationModel);

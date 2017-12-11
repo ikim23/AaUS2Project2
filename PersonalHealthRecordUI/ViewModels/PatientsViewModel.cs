@@ -66,6 +66,19 @@ namespace PersonalHealthRecordUI.ViewModels
             }
         }
 
+        public void OnPatientEdit(int oldCardId, PatientModel patient)
+        {
+            try
+            {
+                _api.UpdatePatientWithId(oldCardId, patient);
+                RefreshPatients();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+        }
+
         public void OnPatientRemove(int cardId)
         {
             try

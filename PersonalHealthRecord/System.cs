@@ -62,6 +62,17 @@ namespace PersonalHealthRecord
             _patients.Update(new WritableInt(patient.CardId), patient);
         }
 
+        public void UpdatePatientWithId(int oldCardId, int cardId, string firstName, string lastName, DateTime birthday)
+        {
+            var patient = _patients.Find(new WritableInt(oldCardId));
+            patient.CardId = cardId;
+            patient.FirstName = firstName;
+            patient.LastName = lastName;
+            patient.Birthday = birthday;
+            RemovePatient(oldCardId);
+            _patients.Insert(new WritableInt(patient.CardId), patient);
+        }
+
         public void AddPatient(string firstName, string lastName, DateTime birthday, int cardId)
         {
             var patient = Mapper.ToPatient(firstName, lastName, birthday, cardId);

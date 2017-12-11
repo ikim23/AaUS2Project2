@@ -57,7 +57,6 @@
                Content="Card ID:"/>
         <TextBox Grid.Row="3" Grid.Column="1"
                  Style="{StaticResource Padding}"
-                 IsEnabled="{Binding NewPatient}"
                  x:Name="CardId"/>
         
         <!-- Row 4 -->

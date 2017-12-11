@@ -34,9 +34,7 @@ namespace PersonalHealthRecordUI.ViewModels
 
         public bool CanCreate(DateTime startDate, string diagnosis)
         {
-            return NewHospitalization &&
-                startDate < DateTime.Today.AddDays(1) &&
-                !string.IsNullOrWhiteSpace(diagnosis);
+            return NewHospitalization && !string.IsNullOrWhiteSpace(diagnosis);
         }
 
         public void Create(DateTime startDate, string diagnosis)
