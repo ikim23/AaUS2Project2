@@ -1,0 +1,131 @@
+﻿<UserControl x:Class="PersonalHealthRecordUI.Views.SearchPatientView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:cal="http://www.caliburnproject.org"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="500">
+    <Grid>
+        <Grid.Resources>
+            <Style x:Key="Padding"  TargetType="{x:Type Control}">
+                <Setter Property="Margin" Value="5" />
+            </Style>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Row 0 -->
+        <GroupBox Grid.Row="0" Grid.Column="0" Header="Search By">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Row 0 -->
+                <RadioButton Grid.Row="0" Grid.Column="0"
+                             Style="{StaticResource Padding}" VerticalAlignment="Center"
+                             GroupName="SearchType"
+                             x:Name="SearchByHospitalName"/>
+                <Label Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="5"
+                       Style="{StaticResource Padding}"
+                       Content="Hospital name"/>
+
+                <!-- Row 1 -->
+                <RadioButton Grid.Row="1" Grid.Column="0" 
+                             Style="{StaticResource Padding}" VerticalAlignment="Center"
+                             GroupName="SearchType"
+                             x:Name="SearchByRange"/>
+                <Label Grid.Row="1" Grid.Column="1" 
+                       Style="{StaticResource Padding}"
+                       Content="Date from:"/>
+                <DatePicker Grid.Row="1" Grid.Column="2" 
+                            Style="{StaticResource Padding}"
+                            x:Name="StartDate"/>
+                <Label Grid.Row="1" Grid.Column="3" 
+                       Style="{StaticResource Padding}"
+                       Content="Date to:"/>
+                <DatePicker Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="2" 
+                            Style="{StaticResource Padding}"
+                            x:Name="EndDate"/>
+
+                <!-- Row 2 -->
+                <RadioButton Grid.Row="2" Grid.Column="0" 
+                             Style="{StaticResource Padding}" VerticalAlignment="Center"
+                             GroupName="SearchType"
+                             x:Name="SearchByInsuranceAgencyCode"/>
+                <Label Grid.Row="2" Grid.Column="1" 
+                       Style="{StaticResource Padding}"
+                       Content="Ins. Ag. Code:"/>
+                <TextBox  Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="4" 
+                          Style="{StaticResource Padding}"
+                          ToolTip="Insurance Agency Code"
+                          x:Name="InsuranceAgencyCode"/>
+            </Grid>
+        </GroupBox>
+
+        <!-- Row 1 -->
+        <Grid Grid.Row="1" Grid.Column="0" 
+              Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="0"
+                   Style="{StaticResource Padding}"
+                   Content="Hospital:"/>
+            <ComboBox Grid.Row="0" Grid.Column="1"
+                      Style="{StaticResource Padding}"
+                      ItemsSource="{Binding Path=Hospitals}"
+                      DisplayMemberPath="Name"
+                      SelectedItem="{Binding Hospital}"
+                      x:Name="Hospital"/>
+            <Button Grid.Row="0" Grid.Column="2" 
+                    Style="{StaticResource Padding}" Width="80"
+                    Content="Search"
+                    x:Name="Search"/>
+        </Grid>
+
+        <!-- Row 2 -->
+        <GroupBox Grid.Row="2" Grid.Column="0" 
+                  Header="Patients">
+            <ListView Style="{StaticResource Padding}"
+                      ItemsSource="{Binding Path=Patients}"
+                      SelectedItem="{Binding SelectedPatient}"
+                      x:Name="SelectedPatient"
+                      cal:Message.Attach="[Event MouseDoubleClick] = [Action OnPatientDoubleClick()]">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="First Name" DisplayMemberBinding="{Binding FirstName}"/>
+                        <GridViewColumn Header="Last Name" DisplayMemberBinding="{Binding LastName}"/>
+                        <GridViewColumn Header="Personal Number" DisplayMemberBinding="{Binding PersonalNumber}"/>
+                        <GridViewColumn Header="Insurance Agency Code" DisplayMemberBinding="{Binding InsuranceAgencyCode}"/>
+                        <GridViewColumn Header="Birthday" DisplayMemberBinding="{Binding Birthday, StringFormat='d', ConverterCulture=sk-SK}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </GroupBox>
+    </Grid>
+</UserControl>
