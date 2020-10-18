@@ -1,0 +1,70 @@
+﻿<Window x:Class="ChatClient.Views.SettingsView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        Title="Settings" Height="180" Width="300">
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Row 0 -->
+        <Label
+            Grid.Row="0" Grid.Column="0"
+            Content="Font size:"/>
+        <TextBox
+            Grid.Row="0" Grid.Column="1"
+            Name="Settings_FontSize"/>
+
+        <!-- Row 1 -->
+        <Label
+            Grid.Row="1" Grid.Column="0"
+            Margin="0,5,0,5"
+            Content="Text color:"/>
+        <xctk:ColorPicker
+            Grid.Row="1" Grid.Column="1"
+            Margin="0,5,0,5"
+            SelectedColor="{Binding Path=Settings.TextColor}"/>
+
+        <!-- Row 2 -->
+        <Label
+            Grid.Row="2" Grid.Column="0"
+            Content="Private message background:"/>
+        <xctk:ColorPicker
+            Grid.Row="2" Grid.Column="1"
+            SelectedColor="{Binding Path=Settings.BackgroundColor}"/>
+
+        <!-- Row 3 -->
+        <StackPanel
+            Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+            Margin="0,5,0,0"
+            Orientation="Horizontal"
+            HorizontalAlignment="Right">
+            <Button 
+                Width="60"
+                Margin="0,0,5,0"
+                Padding="10,5,10,5"
+                IsDefault="True"
+                Content="OK"
+                Name="Ok"/>
+            <Button 
+                Width="60"
+                Padding="10,5,10,5"
+                IsCancel="True"
+                Content="Cancel"
+                Name="Cancel"/>
+        </StackPanel>
+    </Grid>
+</Window>
+

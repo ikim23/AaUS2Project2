@@ -1,0 +1,304 @@
+﻿<Window x:Class="ChatClient.Views.MainView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:models="clr-namespace:ChatClient.Models"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        Title="Chat" Height="500" Width="600">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type models:PublicTextMessageModel}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label
+                    Grid.Row="0" Grid.Column="0"
+                    VerticalAlignment="Center"
+                    FontSize="{Binding FontSize}"
+                    Foreground="DarkGray"
+                    Content="{Binding Path=SendTime}"
+                    ContentStringFormat="{}{0:HH:mm:ss}"/>
+                <Label
+                    Grid.Row="0" Grid.Column="1"
+                    VerticalAlignment="Center"
+                    FontSize="{Binding FontSize}"
+                    FontWeight="Bold"
+                    Foreground="Blue"
+                    Content="{Binding Sender}"/>
+                <Label
+                    Grid.Row="0" Grid.Column="2"
+                    VerticalAlignment="Center"
+                    FontSize="{Binding FontSize}"
+                    Content=":"/>
+                <TextBlock
+                    Grid.Row="0" Grid.Column="3"
+                    VerticalAlignment="Center"
+                    TextWrapping="WrapWithOverflow"
+                    FontSize="{Binding FontSize}"
+                    Foreground="{Binding TextColor}"
+                    Text="{Binding Message}"/>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type models:PrivateTextMessageModel}">
+            <Grid Background="{Binding BackgroundColor}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label
+                    Grid.Row="0" Grid.Column="0"
+                    VerticalAlignment="Center"
+                    FontSize="{Binding FontSize}"
+                    Foreground="DarkGray"
+                    Content="{Binding Path=SendTime}"
+                    ContentStringFormat="{}{0:HH:mm:ss}"/>
+                <Label
+                    Grid.Row="0" Grid.Column="1"
+                    VerticalAlignment="Center"
+                    FontSize="{Binding FontSize}"
+                    FontWeight="Bold"
+                    Foreground="Blue"
+                    Content="{Binding Sender}"/>
+                <Label
+                    Grid.Row="0" Grid.Column="2"
+                    VerticalAlignment="Center"
+                    Content=">"/>
+                <Label
+                    Grid.Row="0" Grid.Column="3"
+                    VerticalAlignment="Center"
+                    FontSize="{Binding FontSize}"
+                    FontWeight="Bold"
+                    Foreground="Blue"
+                    Content="{Binding Receiver}"/>
+                <Label
+                    Grid.Row="0" Grid.Column="4"
+                    VerticalAlignment="Center"
+                    FontSize="{Binding FontSize}"
+                    Content=":"/>
+                <TextBlock
+                    Grid.Row="0" Grid.Column="5"
+                    VerticalAlignment="Center"
+                    TextWrapping="WrapWithOverflow"
+                    FontSize="{Binding FontSize}"
+                    Foreground="{Binding TextColor}"
+                    Text="{Binding Message}"/>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type models:PublicImageMessageModel}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label
+                    Grid.Row="0" Grid.Column="0"
+                    VerticalAlignment="Center"
+                    FontSize="{Binding FontSize}"
+                    Foreground="DarkGray"
+                    Content="{Binding Path=SendTime}"
+                    ContentStringFormat="{}{0:HH:mm:ss}"/>
+                <Label
+                    Grid.Row="0" Grid.Column="1"
+                    VerticalAlignment="Center"
+                    FontSize="{Binding FontSize}"
+                    FontWeight="Bold"
+                    Foreground="Blue"
+                    Content="{Binding Sender}"/>
+                <Label
+                    Grid.Row="0" Grid.Column="2"
+                    VerticalAlignment="Center"
+                    FontSize="{Binding FontSize}"
+                    Content=":"/>
+                <Image
+                    Grid.Row="0" Grid.Column="3"
+                    Source="{Binding Image}"/>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type models:PrivateImageMessageModel}">
+            <Grid Background="{Binding BackgroundColor}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label
+                    Grid.Row="0" Grid.Column="0"
+                    VerticalAlignment="Center"
+                    FontSize="{Binding FontSize}"
+                    Foreground="DarkGray"
+                    Content="{Binding Path=SendTime}"
+                    ContentStringFormat="{}{0:HH:mm:ss}"/>
+                <Label
+                    Grid.Row="0" Grid.Column="1"
+                    VerticalAlignment="Center"
+                    FontSize="{Binding FontSize}"
+                    FontWeight="Bold"
+                    Foreground="Blue"
+                    Content="{Binding Sender}"/>
+                <Label
+                    Grid.Row="0" Grid.Column="2"
+                    VerticalAlignment="Center"
+                    FontSize="{Binding FontSize}"
+                    Content=">"/>
+                <Label
+                    Grid.Row="0" Grid.Column="3"
+                    VerticalAlignment="Center"
+                    FontSize="{Binding FontSize}"
+                    FontWeight="Bold"
+                    Foreground="Blue"
+                    Content="{Binding Receiver}"/>
+                <Label
+                    Grid.Row="0" Grid.Column="4"
+                    VerticalAlignment="Center"
+                    FontSize="{Binding FontSize}"
+                    Content=":"/>
+                <Image
+                    Grid.Row="0" Grid.Column="5"
+                    Source="{Binding Image}"/>
+            </Grid>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Row 0 -->
+        <Label
+            Grid.Row="0" Grid.Column="0"
+            VerticalAlignment="Center"
+            FontWeight="Bold"
+            Content="Messages"/>
+        <Grid Grid.Row="0" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Label
+                Grid.Row="0" Grid.Column="0"
+                VerticalAlignment="Center"
+                FontWeight="Bold"
+                Content="Online"/>
+            <Button
+                Grid.Row="0" Grid.Column="1"
+                Padding="3"
+                Name="OpenSettings">
+                <Image
+                Width="22" Height="22"
+                Source="../Images/settings.png"
+                />
+            </Button>
+        </Grid>
+
+        <!-- Row 1 -->
+        <ListBox
+            Grid.Row="1" Grid.Column="0"
+            Margin="5"
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+            ItemsSource="{Binding Messages}">
+        </ListBox>
+        <ListView
+            Grid.Row="1" Grid.Column="1"
+            Width="100"
+            Margin="0,5,0,5"
+            ItemsSource="{Binding OnlineUsers}">
+            <ListView.View>
+                <GridView>
+                    <GridView.ColumnHeaderContainerStyle>
+                        <Style TargetType="GridViewColumnHeader">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </Style>
+                    </GridView.ColumnHeaderContainerStyle>
+                    <GridViewColumn
+                        Header="User"
+                        DisplayMemberBinding="{Binding}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <!-- Row 2 -->
+        <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Label
+                Grid.Row="0" Grid.Column="0"
+                Margin="0,0,5,0"
+                VerticalAlignment="Center"
+                Content="For:"/>
+            <ComboBox
+                Grid.Row="0" Grid.Column="1"
+                Margin="0,0,5,0"
+                Width="100"
+                ItemsSource="{Binding Recipients}"
+                SelectedItem="{Binding SelectedRecipient}"/>
+            <Label
+                Grid.Row="0" Grid.Column="2"
+                Margin="0,0,5,0"
+                VerticalAlignment="Center"
+                Content="Message:"/>
+            <TextBox
+                Margin="0,0,5,0"
+                Grid.Row="0" Grid.Column="3"
+                Name="Message"/>
+            <Button
+                Grid.Row="0" Grid.Column="4"
+                Margin="0,0,5,0"
+                Padding="3"
+                Name="SendImage">
+                <Image
+                Width="22" Height="22"
+                Source="../Images/open-folder.png"/>
+            </Button>
+            <Button
+                Grid.Row="0" Grid.Column="5"
+                Padding="10,5,10,5"
+                Content="Send"
+                Name="Send"/>
+        </Grid>
+    </Grid>
+</Window>

@@ -1,0 +1,245 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>HockeyPlayerDatabase.Interfaces</name>
+    </assembly>
+    <members>
+        <member name="T:HockeyPlayerDatabase.Interfaces.AgeCategory">
+            <summary>
+            Vekova kategoria.
+            </summary>
+        </member>
+        <member name="F:HockeyPlayerDatabase.Interfaces.AgeCategory.Cadet">
+            <summary>
+            Kadet.
+            </summary>
+        </member>
+        <member name="F:HockeyPlayerDatabase.Interfaces.AgeCategory.Midgest">
+            <summary>
+            Dorastenec.
+            </summary>
+        </member>
+        <member name="F:HockeyPlayerDatabase.Interfaces.AgeCategory.Junior">
+            <summary>
+            Junior.
+            </summary>
+        </member>
+        <member name="F:HockeyPlayerDatabase.Interfaces.AgeCategory.Senior">
+            <summary>
+            Senior.
+            </summary>
+        </member>
+        <member name="T:HockeyPlayerDatabase.Interfaces.IClub">
+            <summary>
+            Klub.
+            </summary>
+        </member>
+        <member name="P:HockeyPlayerDatabase.Interfaces.IClub.Id">
+            <summary>
+            Unikatny identifikator klubu.
+            </summary>
+        </member>
+        <member name="P:HockeyPlayerDatabase.Interfaces.IClub.Name">
+            <summary>
+            Nazov klubu.
+            </summary>
+        </member>
+        <member name="P:HockeyPlayerDatabase.Interfaces.IClub.Address">
+            <summary>
+            Adresa klubu.
+            </summary>
+        </member>
+        <member name="P:HockeyPlayerDatabase.Interfaces.IClub.Url">
+            <summary>
+            URL odkaz na oficialnu stranku klubu.
+            </summary>
+        </member>
+        <member name="T:HockeyPlayerDatabase.Interfaces.IHockeyReport`2">
+            <summary>
+            Rozhranie s metodami poskytujucimi data z databazy (precvici Vase poznatky pre vytvorenie LINQ prikazov 
+            vracajucich enumerovatelne kolekcie, napr. List a Dictionary).
+            </summary>
+            <typeparam name="TClub">Trieda klubu implementujuca rozhranie <see cref="T:HockeyPlayerDatabase.Interfaces.IClub"/>.</typeparam>
+            <typeparam name="TPlayer">Trieda hraca implementujuca rozhranie <see cref="T:HockeyPlayerDatabase.Interfaces.IPlayer"/>.</typeparam>
+        </member>
+        <member name="M:HockeyPlayerDatabase.Interfaces.IHockeyReport`2.GetClubs">
+            <summary>
+            Vrati vsetky kluby z databazy.
+            </summary>
+        </member>
+        <member name="M:HockeyPlayerDatabase.Interfaces.IHockeyReport`2.GetPlayers">
+            <summary>
+            Vrati vsetkych hracov z databazy.
+            </summary>
+        </member>
+        <member name="M:HockeyPlayerDatabase.Interfaces.IHockeyReport`2.GetSortedClubs(System.Int32)">
+            <summary>
+            Vrati utriedeny zoznam klubov podla poctu priradenych hracov zostupne 
+            (od klubu s najvacsim poctom hracov po najmensi), pricom vrati prvych n klubov 
+            zadanych podla vstupneho prametra <paramref name="maxResultCount"/>.
+            </summary>
+            <param name="maxResultCount">Celkovy pocet klubov, ktore vrati.</param>
+        </member>
+        <member name="M:HockeyPlayerDatabase.Interfaces.IHockeyReport`2.GetSortedPlayers(System.Int32)">
+            <summary>
+            Vrati utriedeny zoznam hracov, najskor podla priezviska vzostupne (A - Z), 
+            potom podla mena zostupne (Z - A), pricom vrati prvych n hracov zadanych
+            podla vstupneho parametra <paramref name="maxResultCount"/>.
+            </summary>
+            <param name="maxResultCount">Celkovy pocet hracov, ktorych vrati vo vysledku.</param>
+        </member>
+        <member name="M:HockeyPlayerDatabase.Interfaces.IHockeyReport`2.GetPlayerAverageAge">
+            <summary>
+            Vrati priemerny vek vsetkych hracov.
+            </summary>
+        </member>
+        <member name="M:HockeyPlayerDatabase.Interfaces.IHockeyReport`2.GetYoungestPlayer">
+            <summary>
+            Vrati najmladsieho hraca zo vsetkych. Ak je viac hracov, ktory maju rovnaky najmladsi vek,
+            vrati hraca, ktory ma najvacsie <see cref="P:HockeyPlayerDatabase.Interfaces.IPlayer.KrpId"/>.
+            </summary>
+        </member>
+        <member name="M:HockeyPlayerDatabase.Interfaces.IHockeyReport`2.GetOldestPlayer">
+            <summary>
+            Vrati najstarsieho hraca zo vsetkych. Ak je viac hracov, ktory maju rovnaky najstarsi vek,
+            vrati hraca, ktory ma najmensie <see cref="P:HockeyPlayerDatabase.Interfaces.IPlayer.KrpId"/>.
+            </summary>
+        </member>
+        <member name="M:HockeyPlayerDatabase.Interfaces.IHockeyReport`2.GetClubPlayerAges">
+            <summary>
+            Vrati vek hracov z najvacsieho klubu bez duplicit utriedeny podla poctu hracov zostupne.
+            (Pomocka - jedno z moznych rieseni: zoskupte vsetkych hracov z najvacsieho klubu (vyselektujte si jeden klub, ktory ma 
+            najvacsi pocet hracov) podla ich veku, utriedte ich podla poctu hracov zostupne (od najvacsieho 
+            poctu po najmensi) a takto vyselektujte vsetky ich veky).
+            </summary>
+        </member>
+        <member name="M:HockeyPlayerDatabase.Interfaces.IHockeyReport`2.GetPlayersByAge(System.Int32,System.Int32)">
+            <summary>
+            Vrati vsetkych hracov, ktorych vek je v rozmedzi od <paramref name="minAge"/> vratane do <paramref name="maxAge"/> vratane.
+            </summary>
+            <param name="minAge">Minimalny vek, ktory musia splnat vysledny hraci.</param>
+            <param name="maxAge">Maximalny vek, ktory musia splnat vysledny hraci.</param>
+            <returns></returns>
+        </member>
+        <member name="M:HockeyPlayerDatabase.Interfaces.IHockeyReport`2.GetReportByClub(System.Int32)">
+            <summary>
+            Vrati report jedneho klubu.
+            </summary>
+            <param name="clubId">Id klubu, z ktoreho sa urobi report.</param>
+            <returns></returns>
+        </member>
+        <member name="M:HockeyPlayerDatabase.Interfaces.IHockeyReport`2.GetReportByAgeCategory">
+            <summary>
+            Vrati reporty podla vekovej kategorie. 
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HockeyPlayerDatabase.Interfaces.IHockeyReport`2.SaveToXml(System.String)">
+            <summary>
+            Ulozi zoznam klubov a hracov do XML suboru.
+            </summary>
+            <param name="fileName">Nazov XML suboru, do ktoreho sa zoserializuje zoznam klubov a hracov.</param>
+        </member>
+        <member name="T:HockeyPlayerDatabase.Interfaces.IPlayer">
+            <summary>
+            Hokejovy hrac.
+            </summary>
+        </member>
+        <member name="P:HockeyPlayerDatabase.Interfaces.IPlayer.Id">
+            <summary>
+            Unikatny identifikator hraca.
+            </summary>
+        </member>
+        <member name="P:HockeyPlayerDatabase.Interfaces.IPlayer.FirstName">
+            <summary>
+            Meno hraca.
+            </summary>
+        </member>
+        <member name="P:HockeyPlayerDatabase.Interfaces.IPlayer.LastName">
+            <summary>
+            Priezvisko hraca.
+            </summary>
+        </member>
+        <member name="P:HockeyPlayerDatabase.Interfaces.IPlayer.FullName">
+            <summary>
+            Plne meno v tvare meno a priezvisko: "{<see cref="P:HockeyPlayerDatabase.Interfaces.IPlayer.FirstName"/>} {<see cref="P:HockeyPlayerDatabase.Interfaces.IPlayer.LastName"/>}". 
+            </summary>
+        </member>
+        <member name="P:HockeyPlayerDatabase.Interfaces.IPlayer.TitleBefore">
+            <summary>
+            Titul pred.
+            </summary>
+        </member>
+        <member name="P:HockeyPlayerDatabase.Interfaces.IPlayer.YearOfBirth">
+            <summary>
+            Rok narodenia.
+            </summary>
+        </member>
+        <member name="P:HockeyPlayerDatabase.Interfaces.IPlayer.KrpId">
+            <summary>
+            Identifikator kmenoveho registracneho preukazu Slovenskeho zvazu ladoveho hokeja. 
+            Zabezpecte, aby bol v databaze unikatny.
+            </summary>
+        </member>
+        <member name="P:HockeyPlayerDatabase.Interfaces.IPlayer.AgeCategory">
+            <summary>
+            Vekova kategoria.
+            </summary>
+        </member>
+        <member name="P:HockeyPlayerDatabase.Interfaces.IPlayer.ClubId">
+            <summary>
+            Identifikator klubu (cudzi kluc).
+            </summary>
+        </member>
+        <member name="T:HockeyPlayerDatabase.Interfaces.ReportResult">
+            <summary>
+            Vysledok reportu.
+            </summary>
+        </member>
+        <member name="P:HockeyPlayerDatabase.Interfaces.ReportResult.TotalPlayerCount">
+            <summary>
+            Celkovy pocet hracov.
+            </summary>
+        </member>
+        <member name="P:HockeyPlayerDatabase.Interfaces.ReportResult.AveragePlayerAge">
+            <summary>
+            Priemerny vek vsetkych hracov.
+            </summary>
+        </member>
+        <member name="P:HockeyPlayerDatabase.Interfaces.ReportResult.YoungestPlayerFullName">
+            <summary>
+            Plne meno (meno a priezvisko) najmladsieho hraca. Ak je viac hracov, ktory maju rovnaky najmladsi vek,
+            vrati hraca, ktory ma najvacsie <see cref="P:HockeyPlayerDatabase.Interfaces.IPlayer.KrpId"/>.
+            </summary>
+        </member>
+        <member name="P:HockeyPlayerDatabase.Interfaces.ReportResult.OldestPlayerFullName">
+            <summary>
+            Plne meno (meno a priezvisko) najstarsieho hraca. Ak je viac hracov, ktory maju rovnaky najstarsi vek,
+            vrati hraca, ktory ma najmensie <see cref="P:HockeyPlayerDatabase.Interfaces.IPlayer.KrpId"/>.
+            </summary>
+        </member>
+        <member name="P:HockeyPlayerDatabase.Interfaces.ReportResult.YoungestPlayerAge">
+            <summary>
+            Vek najmladsieho hraca.
+            </summary>
+        </member>
+        <member name="P:HockeyPlayerDatabase.Interfaces.ReportResult.OldestPlayerAge">
+            <summary>
+            Vek najstarsieho hraca.
+            </summary>
+        </member>
+        <member name="M:HockeyPlayerDatabase.Interfaces.ReportResult.#ctor(System.Int32,System.Nullable{System.Double},System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Vytvori a inicializuje objekt reportu.
+            </summary>
+            <param name="totalPlayerCount">Celkovy pocet hracov.</param>
+            <param name="averagePlayerAge">Priemerny vek vsetkych hracov.</param>
+            <param name="youngestPlayerFullName">Plne meno (meno a priezvisko) najmladsieho hraca. 
+            Ak je viac hracov, ktory maju rovnaky najmladsi vek, vrati hraca, ktory ma najvacsie <see cref="P:HockeyPlayerDatabase.Interfaces.IPlayer.KrpId"/>.</param>
+            <param name="oldestPlayerFullName">Plne meno (meno a priezvisko) najstarsieho hraca. 
+            Ak je viac hracov, ktory maju rovnaky najstarsi vek, vrati hraca, ktory ma najmensie <see cref="P:HockeyPlayerDatabase.Interfaces.IPlayer.KrpId"/>.</param>
+            <param name="youngestPlayerAge">Vek najmladsieho hraca.</param>
+            <param name="oldestPlayerAge">Vek najstarsieho hraca.</param>
+        </member>
+    </members>
+</doc>
