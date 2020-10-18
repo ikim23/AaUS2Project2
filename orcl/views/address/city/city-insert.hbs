@@ -1,0 +1,35 @@
+<div class="row">
+  <div class="col-md-10 offset-md-1">
+    <div class="row">
+      <div class="col">
+        <h2>Nové mesto</h2>
+      </div>
+    </div>
+    <form action="/add/city" method="POST">
+      <div class="form-group row required">
+        <label for="regionId" class="col-3 col-form-label">Región</label>
+        <div class="col-9">
+          <select class="form-control" name="regionId">
+            {{#each regions}}
+            <option value="{{this.regionId}}">{{this.name}}</option>
+            {{/each}}
+          </select>
+        </div>
+      </div>
+      <div class="form-group row required">
+        <label for="city" class="col-3 col-form-label">Názov</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.city}} is-invalid{{/if}}" type="text" value="{{region.city}}" name="city">
+        </div>
+      </div>
+      <div class="form-group row required">
+        <label for="cityCode" class="col-3 col-form-label">PSČ</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.cityCode}} is-invalid{{/if}}" type="text" value="{{region.cityCode}}" name="cityCode">
+        </div>
+      </div>      
+      
+      <button type="submit" class="btn btn-primary pull-right">Uložiť</button>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,9 @@
+.vscode/
+node_modules/
+sql_data/
+.env
+*.~m2
+
+# deploy script
+docker-compose-production.yml
+deploy.sh

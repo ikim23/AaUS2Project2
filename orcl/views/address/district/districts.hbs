@@ -1,0 +1,37 @@
+<div class="row">
+  <div class="col-md-10 offset-md-1">
+    <h2>Obovdy</h2>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th scope="col" class="align-middle">#</th>
+          <th scope="col" class="align-middle">Názov</th>
+          <th scope="col" class="align-middle">PSČ</th>
+          <th scope="col" class="align-middle">Kód obvodu</th>
+          <th>
+            <a href="/add/district" class="btn btn-primary pull-right">
+              <i class="fa fa-plus" aria-hidden="true"></i>
+            </a>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each districts}}
+        <tr>
+          <th scope="row" class="align-middle">{{this.rowNumber}}</th>
+          <td class="align-middle">{{this.district}}</td>
+          <td class="align-middle">{{this.cityCode}}</td>
+          <td class="align-middle">{{this.districtId}}</td>
+          <td>
+            <form action="/delete/district/{{this.districtId}}" method="POST" class="d-inline pull-right">
+              <button type="submit" class="btn btn-danger">
+                <i class="fa fa-times" aria-hidden="true"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div>

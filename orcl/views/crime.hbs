@@ -1,0 +1,57 @@
+<div class="row">
+  <div class="col-md-10 offset-md-1">
+    <div class="row">
+      <div class="col-9">
+        <h2>Trestny cin</h2>
+      </div>
+      <div class="col-3">
+        <div class="pull-right">
+          <a href="/edit/crime/{{crime.id}}" class="btn btn-primary">
+            <i class="fa fa-pencil" aria-hidden="true"></i>
+          </a>
+          <form action="/delete/crime/{{crime.id}}" method="POST" class="d-inline">
+            <button type="submit" class="btn btn-danger">
+              <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <table class="table table-bordered">
+      <tbody>
+        <tr>
+          <th scope="row">Id cinu</th>
+          <td>{{crime.id}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Obvod</th>
+          <td>{{crime.district}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Druh</th>
+          <td>{{crime.type}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Subor s popisom</th>
+          <td>{{crime.descFileName}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Hodnota skody</th>
+          <td>{{crime.damageValue}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Objasneny</th>
+          <td>{{crime.explained}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Datum zapisu</th>
+          <td>{{crime.openDate}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Datum uzavretia</th>
+          <td>{{crime.closeDate}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,120 @@
+<div class="row">
+  <div class="col-md-10 offset-md-1">
+    <div class="row">
+      <div class="col-9">
+        <h2>Osoba</h2>
+      </div>
+      <div class="col-3">
+        <div class="pull-right">
+          <a href="/edit/person/{{person.personalNumber}}" class="btn btn-primary">
+            <i class="fa fa-pencil" aria-hidden="true"></i>
+          </a>
+          <form action="/delete/person/{{person.personalNumber}}" method="POST" class="d-inline">
+            <button type="submit" class="btn btn-danger">
+              <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <table class="table table-bordered">
+          <tbody>
+            <tr>
+              <th scope="row">Meno</th>
+              <td>{{person.name}}</td>
+            </tr>
+            <tr>
+              <th scope="row">Priezvisko</th>
+              <td>{{person.surname}}</td>
+            </tr>
+            <tr>
+              <th scope="row">Rodné číslo</th>
+              <td>{{person.personalNumber}}</td>
+            </tr>
+            <tr>
+              <th scope="row">Ulica</th>
+              <td>{{person.street}}</td>
+            </tr>
+            <tr>
+              <th scope="row">Mesto</th>
+              <td>{{person.city}}</td>
+            </tr>
+            <tr>
+              <th scope="row">PSČ</th>
+              <td>{{person.cityCode}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-9">
+        <h2>Biometrické dáta</h2>
+      </div>
+      <div class="col-3">
+        <div class="pull-right">
+          {{#if data}}
+          <a href="/edit/bm-data/{{person.personalNumber}}" class="btn btn-primary">
+            <i class="fa fa-pencil" aria-hidden="true"></i>
+          </a>
+          <form action="/delete/bm-data/{{person.personalNumber}}" method="POST" class="d-inline">
+            <button type="submit" class="btn btn-danger">
+              <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+          </form>
+          {{else}}
+          <a href="/add/bm-data/{{person.personalNumber}}" class="btn btn-primary">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+          </a>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+    {{#if data}}
+    <div class="row">
+      <div class="col">
+        <table class="table table-bordered">
+          <tbody>
+            <tr>
+              <th scope="row">Výška [cm]</th>
+              <td>{{data.height}}</td>
+            </tr>
+            <tr>
+              <th scope="row">Váha [kg]</th>
+              <td>{{data.weight}}</td>
+            </tr>
+            <tr>
+              <th scope="row">Farba pleti</th>
+              <td bgcolor="{{data.skinColor}}"></td>
+            </tr>
+            <tr>
+              <th scope="row">Farba vlasov</th>
+              <td bgcolor="{{data.hairColor}}"></td>
+            </tr>
+            <tr>
+              <th scope="row">Farba očí</th>
+              <td bgcolor="{{data.eyeColor}}"></td>
+            </tr>
+            <tr>
+              <th scope="row">Fotka</th>
+              <td>
+                <img class="img-fluid" src="data:{{data.photoMimeType}};base64,{{data.photo}}" alt="{{data.photoFilename}}" />
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Odtlačok prsta</th>
+              <td>
+                <img class="img-fluid" src="data:{{data.fingerprintMimeType}};base64,{{data.fingerprint}}" alt="{{data.fingerprintFilename}}"
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {{/if}}
+  </div>
+</div>

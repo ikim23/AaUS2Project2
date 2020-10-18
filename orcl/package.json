@@ -1,0 +1,41 @@
+{
+  "name": "orcl",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "debug": "node --inspect=0.0.0.0:9229 app.js",
+    "watch": "nodemon --legacy-watch --ext js,hbs --nolazy --inspect=0.0.0.0:9229",
+    "lint": "eslint --ext .js ./",
+    "start": "node app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "cookie-parser": "^1.4.3",
+    "dateformat": "^3.0.2",
+    "express": "^4.16.2",
+    "express-fileupload": "^0.3.0",
+    "express-session": "^1.15.6",
+    "file-type": "^7.2.0",
+    "hbs": "^4.0.1",
+    "joi": "^13.0.1",
+    "lodash": "^4.17.4",
+    "morgan": "^1.9.0",
+    "oracledb": "^1.13.1",
+    "serve-favicon": "^2.4.5"
+  },
+  "devDependencies": {
+    "eslint": "^4.10.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "faker": "Marak/faker.js",
+    "fs": "0.0.1-security",
+    "nodemon": "^1.12.1"
+  },
+  "eslintConfig": {
+    "extends": "airbnb-base"
+  }
+}

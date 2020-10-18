@@ -1,0 +1,81 @@
+<div class="row">
+  <div class="col-md-10 offset-md-1">
+    <div class="row">
+      <div class="col-6">
+        <h2>Zamestnanci</h2>
+      </div>
+      <div class="col-6">
+        <input id="employee-search" class="form-control" type="text" placeholder="Hľadaj podľa mena a priezviska">
+      </div>
+    </div>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th scope="col" class="align-middle">#</th>
+          <th scope="col" class="align-middle">Meno</th>
+          <th scope="col" class="align-middle">Priezvisko</th>
+          <th scope="col" class="align-middle">Rodné číslo</th>
+          <th scope="col" class="align-middle">Funkcia</th>
+          <th scope="col" class="align-middle">Hodnosť</th>
+          <th scope="col" class="align-middle">Zamestnaný od</th>
+          <th scope="col" class="align-middle">Zamestnaný do</th>
+          <th>
+            <a href="/add/employee" class="btn btn-primary pull-right">
+              <i class="fa fa-plus" aria-hidden="true"></i>
+            </a>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each employees}}
+        <tr>
+          <th scope="row" class="align-middle">{{this.rowNumber}}</th>
+          <td class="align-middle">{{this.name}}</td>
+          <td class="align-middle">{{this.surname}}</td>
+          <td class="align-middle">{{this.personalNumber}}</td>
+          <td class="align-middle">{{this.position}}</td>
+          <td class="align-middle">{{this.rank}}</td>
+          <td class="align-middle">{{this.fromDate}}</td>
+          <td class="align-middle">{{this.toDate}}</td>
+          <td>
+            <a href="/employee/{{this.id}}" class="btn btn-primary pull-left">
+              <i class="fa fa-plus" aria-hidden="true"></i>
+            </a>
+            <form action="/delete/employee/{{this.id}}" method="POST" class="d-inline pull-right">
+              <button type="submit" class="btn btn-danger">
+                <i class="fa fa-times" aria-hidden="true"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    <ul class="paging">
+      {{#each pages}}
+      <li>
+        {{#if this.actual}}
+        <strong>{{this.page}}</strong>
+        {{else}}
+        <a href="{{this.url}}">{{this.page}}</a>
+        {{/if}}
+      </li>
+      {{/each}}
+    </ul>
+  </div>
+</div>
+<script defer="defer">
+  window.addEventListener('DOMContentLoaded', function () {
+    (function ($) {
+      $(document).ready(function () {
+        var searchInput = $('#employee-search');
+        searchInput.keypress(function (evt) {
+          if (evt.which === 13) {
+            var query = searchInput.val();
+            window.location.href = '/employees?q=' + encodeURIComponent(query);
+          }
+        });
+      });
+    })(jQuery);
+  });
+</script>

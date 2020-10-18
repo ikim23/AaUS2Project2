@@ -1,0 +1,36 @@
+body {
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+.view-outbox {
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+.fa {
+  color: white;
+}
+
+.form-group.required label:after {
+  content:" *";
+  color:red;
+}
+
+.paging {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.paging li {
+  float: left;
+  margin-right: 10px;
+}
+
+#chart {
+  margin: auto;
+}
+
+.btn-spacing {
+  margin-right: 8px;
+}

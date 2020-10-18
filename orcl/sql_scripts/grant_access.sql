@@ -1,0 +1,13 @@
+grant all on osoba to gabaj4, kasman11;
+grant all on krajina to gabaj4, kasman11;
+grant all on region to gabaj4, kasman11;
+grant all on mesto to gabaj4, kasman11;
+grant all on bm_udaje to gabaj4, kasman11;
+grant all on trestny_cin to gabaj4, kasman11;
+grant all on obvod to gabaj4, kasman11;
+grant all on ucastnik_cinu to gabaj4, kasman11;
+grant all on t_plat to gabaj4, kasman11;
+grant all on t_tab_plat to gabaj4, kasman11;
+grant all on sekv_id_zam to gabaj4, kasman11;
+grant all on t_zamestnanec to gabaj4, kasman11;
+grant all on zamestnanec to gabaj4, kasman11;

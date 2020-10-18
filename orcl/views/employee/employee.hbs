@@ -1,0 +1,96 @@
+<div class="row">
+  <div class="col-md-10 offset-md-1">
+    <div class="row">
+      <div class="col-9">
+        <h2>Zamestnanec</h2>
+      </div>
+      <div class="col-3">
+        <div class="pull-right">
+          <a href="/edit/employee/{{employee.id}}" class="btn btn-primary">
+            <i class="fa fa-pencil" aria-hidden="true"></i>
+          </a>
+          <form action="/delete/employee/{{employee.id}}" method="POST" class="d-inline">
+            <button type="submit" class="btn btn-danger">
+              <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <table class="table table-bordered">
+      <tbody>
+        <tr>
+          <th scope="row">Meno</th>
+          <td>{{employee.name}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Priezvisko</th>
+          <td>{{employee.surname}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Rodné číslo</th>
+          <td>{{employee.personalNumber}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Funkcia</th>
+          <td>{{employee.position}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Hodnosť</th>
+          <td>{{employee.rank}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Zamestnaný od</th>
+          <td>{{employee.fromDate}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Zamestnaný do</th>
+          <td>{{employee.toDate}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Ulica</th>
+          <td>{{employee.street}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Mesto</th>
+          <td>{{employee.city}}</td>
+        </tr>
+        <tr>
+          <th scope="row">PSČ</th>
+          <td>{{employee.cityCode}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <h2>Platy</h2>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th scope="col" class="align-middle">Od</th>
+          <th scope="col" class="align-middle">Do</th>
+          <th scope="col" class="align-middle">Výška platu [&euro;/mesiac]</th>
+          <th scope="col">
+            <a href="/add/salary/{{employee.id}}" class="btn btn-primary pull-right">
+              <i class="fa fa-plus" aria-hidden="true"></i>
+            </a>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each salaries}}
+        <tr>
+          <td class="align-middle">{{this.fromDate}}</td>
+          <td class="align-middle">{{this.toDate}}</td>
+          <td class="align-middle">{{this.salary}} &euro;</td>
+          <td>
+            <form action="/delete/salary/{{../employee.id}}/{{this.id}}" method="POST" class="pull-right{{#unless @index}} invisible{{/unless}}">
+              <button type="submit" class="btn btn-danger">
+                <i class="fa fa-times" aria-hidden="true"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div>

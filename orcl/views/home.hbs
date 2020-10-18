@@ -1,0 +1,20 @@
+<div class="row">
+  <div class="col-md-10 offset-md-1">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th scope="col" class="align-middle">Tabuľka</th>
+          <th scope="col" class="align-middle">Kardinalita</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each counts}}
+        <tr>
+          <td class="align-middle">{{this.table}}</td>
+          <td class="align-middle">{{this.count}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div>

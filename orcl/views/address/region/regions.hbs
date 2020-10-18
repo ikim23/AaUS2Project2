@@ -1,0 +1,37 @@
+<div class="row">
+  <div class="col-md-10 offset-md-1">
+    <h2>Regióny</h2>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th scope="col" class="align-middle">#</th>
+          <th scope="col" class="align-middle">Kód krajiny</th>
+          <th scope="col" class="align-middle">Kód regiónu</th>
+          <th scope="col" class="align-middle">Názov</th>
+          <th>
+            <a href="/add/region" class="btn btn-primary pull-right">
+              <i class="fa fa-plus" aria-hidden="true"></i>
+            </a>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each regions}}
+        <tr>
+          <th scope="row" class="align-middle">{{this.rowNumber}}</th>
+          <td class="align-middle">{{this.countryId}}</td>
+          <td class="align-middle">{{this.regionId}}</td>
+          <td class="align-middle">{{this.name}}</td>
+          <td>
+            <form action="/delete/region/{{this.regionId}}" method="POST" class="d-inline pull-right">
+              <button type="submit" class="btn btn-danger">
+                <i class="fa fa-times" aria-hidden="true"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div>

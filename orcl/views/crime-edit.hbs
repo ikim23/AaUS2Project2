@@ -1,0 +1,59 @@
+<div class="row">
+  <div class="col-md-10 offset-md-1">
+    <div class="row">
+      <div class="col">
+        <h2>Trestny cin</h2>
+      </div>
+    </div>
+    <form action="/edit/crime/{{crime.id}}" method="POST" enctype="multipart/form-data">
+      <div class="form-group row required">
+        <label for="districtId" class="col-3 col-form-label">Obvod</label>
+        <div class="col-9">
+          <select class="form-control" name="districtId">
+            {{#each districts}}
+            <option value="{{this.districtId}}">{{this.district}}</option>
+            {{/each}}
+          </select>
+        </div>
+      </div>
+      <div class="form-group row required">
+        <label for="type" class="col-3 col-form-label">Druh</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.type}} is-invalid{{/if}}" type="text" value="{{crime.type}}" name="type">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="description" class="col-3 col-form-label">Subor s popisom</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.description}} is-invalid{{/if}}" type="file" value="{{crime.description}}" name="description">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="damageValue" class="col-3 col-form-label">Hodnota skody</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.damageValue}} is-invalid{{/if}}" type="number" value="{{crime.damageValue}}" name="damageValue">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="explained" class="col-3 col-form-label">Objasnenost</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.explained}} is-invalid{{/if}}" type="checkbox" value="{{crime.explained}}" name="explained">
+        </div>
+      </div>
+      <div class="form-group row required">
+        <label for="openDate" class="col-3 col-form-label">Datum zapisu</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.openDate}} is-invalid{{/if}}" type="date" value="{{crime.openDate}}" name="openDate">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="fromDate" class="col-3 col-form-label">Datum uzavretia</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.closeDate}} is-invalid{{/if}}" type="date" value="{{crime.closeDate}}" name="closeDate">
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary pull-right">Uložiť</button>
+    </form>
+  </div>
+</div>
