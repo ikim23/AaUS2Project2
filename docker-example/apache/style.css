@@ -1,0 +1,18 @@
+#header {
+  margin-top: 60px;
+  text-align: center;
+}
+
+#btn-add-todo {
+  margin-left: 5px;
+}
+
+ul,
+.todo-text,
+.btn-wrapper {
+  padding: 3px 0;
+}
+
+li {
+  line-height: 40px;
+}
