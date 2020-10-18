@@ -1,0 +1,197 @@
+﻿<Window x:Class="HockeyPlayerDatabase.MainApp.Views.MainView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Hockey Player Database"
+        WindowStartupLocation="CenterScreen"
+        Height="600" Width="900">
+    <Grid>
+        <Grid.Resources>
+            <Style x:Key="Input" TargetType="{x:Type TextBox}">
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="Height" Value="24"></Setter>
+            </Style>
+            <Style x:Key="Btn" TargetType="{x:Type Button}">
+                <Setter Property="Padding" Value="6,4,6,4" />
+            </Style>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Row 0 -->
+        <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+              Height="25">
+            <MenuItem Header="_File"
+                      Height="25">
+                <MenuItem Header="Export DB to XML..."
+                          Height="25"
+                          Name="Export"/>
+                <Separator/>
+                <MenuItem Header="_Exit"
+                          Height="25"
+                          Name="Exit"/>
+            </MenuItem>
+        </Menu>
+
+        <!-- Row 1 -->
+        <GroupBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                  Header="Filter"
+                  Margin="10"
+                  Padding="5">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Row 0 -->
+                <Label Grid.Row="0" Grid.Column="0">KRP:</Label>
+                <Label Grid.Row="0" Grid.Column="1">First name:</Label>
+                <Label Grid.Row="0" Grid.Column="2">Last name:</Label>
+                <Label Grid.Row="0" Grid.Column="3">Year of birth (from - to):</Label>
+                <Label Grid.Row="0" Grid.Column="4">Age category:</Label>
+                <Label Grid.Row="0" Grid.Column="5">Club:</Label>
+
+                <!-- Row 1 -->
+                <TextBox Grid.Row="1" Grid.Column="0"
+                         Style="{StaticResource Input}"
+                         Margin="0,0,5,0"
+                         Name="Krp"/>
+                <TextBox Grid.Row="1" Grid.Column="1"
+                         Style="{StaticResource Input}"
+                         Margin="0,0,5,0"
+                         Name="FirstName"/>
+                <TextBox Grid.Row="1" Grid.Column="2"
+                         Style="{StaticResource Input}"
+                         Margin="0,0,5,0"
+                         Name="LastName"/>
+                <Grid Grid.Row="1" Grid.Column="3"
+                      Margin="0,0,5,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Row="0" Grid.Column="0"
+                             Style="{StaticResource Input}"
+                             Name="YearFrom"/>
+                    <Label Grid.Row="0" Grid.Column="1"
+                           VerticalAlignment="Center">-</Label>
+                    <TextBox Grid.Row="0" Grid.Column="2"
+                             Style="{StaticResource Input}"
+                             Name="YearTo"/>
+                </Grid>
+                <Grid Grid.Row="1" Grid.Column="4"
+                      Margin="0,5,5,5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <CheckBox Grid.Row="0" Grid.Column="0"
+                              Name="Cadet">Cadet</CheckBox>
+                    <CheckBox Grid.Row="0" Grid.Column="1"
+                              Name="Midges">Midges</CheckBox>
+                    <CheckBox Grid.Row="1" Grid.Column="0"
+                              Name="Junior">Junior</CheckBox>
+                    <CheckBox Grid.Row="1" Grid.Column="1"
+                              Name="Senior">Senior</CheckBox>
+                </Grid>
+                <TextBox Grid.Row="1" Grid.Column="5"
+                         Style="{StaticResource Input}"
+                         Name="Club"/>
+
+                <!-- Row 2 -->
+                <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="6"
+                        Style="{StaticResource Btn}"
+                        Name="Apply">Apply</Button>
+            </Grid>
+        </GroupBox>
+
+        <!-- Row 2 -->
+        <StackPanel Grid.Row="2" Grid.Column="0"
+                    Margin="5,0,0,0"
+                    Orientation="Horizontal">
+            <Label Content="Filtered Items:"/>
+            <Label Name="Players_Count" />
+            <Label Content="/"/>
+            <Label Name="PlayersCount" />
+        </StackPanel>
+
+        <!-- Row 3 -->
+        <Grid Grid.Row="3" Grid.Column="0" ColumnSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <ListView Grid.Row="0" Grid.Column="0"
+                      Margin="10,0,0,10"
+                      ItemsSource="{Binding Path=Players}"
+                      SelectedItem="{Binding SelectedPlayer}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="KPR" DisplayMemberBinding="{Binding KrpId}"/>
+                        <GridViewColumn Header="First name" DisplayMemberBinding="{Binding FirstName}"/>
+                        <GridViewColumn Header="Last name" DisplayMemberBinding="{Binding LastName}"/>
+                        <GridViewColumn Header="Year of birth" DisplayMemberBinding="{Binding YearOfBirth}"/>
+                        <GridViewColumn Header="Age category" DisplayMemberBinding="{Binding AgeCategory}"/>
+                        <GridViewColumn Header="Club" DisplayMemberBinding="{Binding Path=Club.Name}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
+            <StackPanel Grid.Row="0" Grid.Column="1"
+                        Margin="10,0,10,10">
+                <Button 
+                    Style="{StaticResource Btn}"
+                    Margin="0,0,0,10"
+                    Content="Add..."
+                    Name="Add"/>
+                <Button 
+                    Style="{StaticResource Btn}"
+                    Margin="0,0,0,10"
+                    Content="Remove"
+                    Name="Remove"/>
+                <Button 
+                    Style="{StaticResource Btn}"
+                    Margin="0,0,0,25"
+                    Content="Edit..."
+                    Name="Edit"/>
+                <Button 
+                    Style="{StaticResource Btn}"
+                    Margin="0,0,0,10"
+                    Content="Open club URL..."
+                    Name="OpenUrl"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
