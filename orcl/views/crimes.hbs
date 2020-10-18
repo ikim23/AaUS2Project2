@@ -1,0 +1,84 @@
+<div class="row">
+  <div class="col-md-10 offset-md-1">
+    <div class="row">
+      <div class="col-6">
+        <h2>Trestne ciny</h2>
+      </div>
+      <div class="col-6">
+        <input id="crime-search" class="form-control" type="text" placeholder="Hľadaj podľa druhu">
+      </div>
+    </div>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th scope="col" class="align-middle">#</th>
+          <th scope="col" class="align-middle">Id cinu</th>
+          <th scope="col" class="align-middle">Obvod</th>
+          <th scope="col" class="align-middle">Druh</th>
+          <th scope="col" class="align-middle">Subor s popisom</th>
+          <th scope="col" class="align-middle">Hodnota skody</th>
+          <th scope="col" class="align-middle">Objasneny</th>
+          <th scope="col" class="align-middle">Datum zapisu</th>
+          <th scope="col" class="align-middle">Datum uzavretia</th>
+          <th>
+            <a href="/add/crime" class="btn btn-primary pull-right">
+              <i class="fa fa-plus" aria-hidden="true"></i>
+            </a>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each crimes}}
+        <tr>
+          <th scope="row" class="align-middle">{{this.rowNumber}}</td>
+            <td class="align-middle">{{this.id}}</td>
+            <td class="align-middle">{{this.district}}</td>
+            <td class="align-middle">{{this.type}}</td>
+            <td class="align-middle">{{this.descFileName}}</td>
+            <td class="align-middle">{{this.damageValue}}</td>
+            <td class="align-middle">{{this.explained}}</td>
+            <td class="align-middle">{{this.openDate}}</td>
+            <td class="align-middle">{{this.closeDeate}}</td>
+            <td>
+              <a href="/crime/{{this.id}}" class="btn btn-primary pull-left">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+              </a>
+              <form action="/delete/crime/{{this.id}}" method="POST" class="d-inline pull-right">
+                <button type="submit" class="btn btn-danger">
+                  <i class="fa fa-times" aria-hidden="true"></i>
+                </button>
+              </form>
+            </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    <ul class="paging">
+      {{#each pages}}
+      <li>
+        {{#if this.actual}}
+        <strong>{{this.page}}</strong>
+        {{else}}
+        <a href="{{this.url}}">{{this.page}}</a>
+        {{/if}}
+      </li>
+      {{/each}}
+    </ul>
+  </div>
+</div>
+
+<script defer="defer">
+  window.addEventListener('DOMContentLoaded', function () {
+    (function ($) {
+      $(document).ready(function () {
+        var searchInput = $('#crime-search');
+        searchInput.keypress(function (evt) {
+          if (evt.which === 13) {
+            var query = searchInput.val();
+            window.location.href = '/crimes?q=' + encodeURIComponent(query);
+          }
+        });
+      });
+    })(jQuery);
+  });
+</script>

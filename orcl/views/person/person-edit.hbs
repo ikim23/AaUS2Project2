@@ -1,0 +1,41 @@
+<div class="row">
+  <div class="col-md-10 offset-md-1">
+    <div class="row">
+      <div class="col">
+        <h2>Zamestnanec</h2>
+      </div>
+    </div>
+    <form action="/edit/person/{{person.personalNumber}}" method="POST">
+      <div class="form-group row required">
+        <label for="name" class="col-3 col-form-label">Meno</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.name}} is-invalid{{/if}}" type="text" value="{{person.name}}" name="name">
+        </div>
+      </div>
+      <div class="form-group row required">
+        <label for="surname" class="col-3 col-form-label">Priezvisko</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.surname}} is-invalid{{/if}}" type="text" value="{{person.surname}}" name="surname">
+        </div>
+      </div>
+      <div class="form-group row required">
+        <label for="cityCode" class="col-3 col-form-label">Mesto</label>
+        <div class="col-9">
+          <select class="form-control" name="cityCode">
+            {{#each cities}}
+            <option value="{{this.cityCode}}"{{#if this.selected}} selected{{/if}}>{{this.city}}</option>
+            {{/each}}
+          </select>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="street" class="col-3 col-form-label">Ulica</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.street}} is-invalid{{/if}}" type="text" value="{{person.street}}" name="street">
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary pull-right">Uložiť</button>
+    </form>
+  </div>
+</div>

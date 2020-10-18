@@ -1,0 +1,69 @@
+<div class="row">
+  <div class="col-md-10 offset-md-1">
+    <div class="row">
+      <div class="col-6">
+        <h2>Trestne ciny za obdobie</h2>
+      </div>
+      <form action="/report/crimes/season" method="POST">
+        <div class="form-group row required">
+        <label for="fromDate" class="col-3 col-form-label">Datum od</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.fromDate}} is-invalid{{/if}}" type="date" value="{{participant.fromDate}}" name="fromDate">
+        </div>
+      </div>
+      <div class="form-group row required">
+        <label for="toDate" class="col-3 col-form-label">Datum do</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.toDate}} is-invalid{{/if}}" type="date" value="{{participant.toDate}}" name="toDate">
+        </div>
+      </div>
+      <div class="form-group row required">
+        <label for="type" class="col-3 col-form-label">Typ cinu</label>
+        <div class="col-9">
+          <select class="form-control" name="type">
+            {{#each crimeNames}}
+            <option value="{{this}}">{{this}}</option>
+            {{/each}}
+          </select>
+        </div>
+      </div>
+       <button type="submit" class="btn btn-primary pull-right">Zobraz</button>
+      </form>
+    </div>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th scope="col" class="align-middle">Id cinu</th>
+          <th scope="col" class="align-middle">Druh</th>
+          <th scope="col" class="align-middle">Hodnota skody</th>
+          <th scope="col" class="align-middle">Objasneny</th>
+          <th scope="col" class="align-middle">Datum zapisu</th>
+          <th scope="col" class="align-middle">Datum uzavretia</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each crimes}}
+        <tr>
+            <td class="align-middle">{{this.id}}</td>
+            <td class="align-middle">{{this.type}}</td>
+            <td class="align-middle">{{this.damageValue}}</td>
+            <td class="align-middle">{{this.explained}}</td>
+            <td class="align-middle">{{this.openDate}}</td>
+            <td class="align-middle">{{this.closeDeate}}</td>
+            <td>
+              <a href="/crime/{{this.id}}" class="btn btn-primary pull-left">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+              </a>
+              <form action="/delete/crime/{{this.id}}" method="POST" class="d-inline pull-right">
+                <button type="submit" class="btn btn-danger">
+                  <i class="fa fa-times" aria-hidden="true"></i>
+                </button>
+              </form>
+            </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+</div>
+
+</script>

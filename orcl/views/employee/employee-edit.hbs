@@ -1,0 +1,65 @@
+<div class="row">
+  <div class="col-md-10 offset-md-1">
+    <div class="row">
+      <div class="col">
+        <h2>Zamestnanec</h2>
+      </div>
+    </div>
+    <form action="/edit/employee/{{employee.id}}" method="POST">
+      <div class="form-group row required">
+        <label for="name" class="col-3 col-form-label">Meno</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.name}} is-invalid{{/if}}" type="text" value="{{employee.name}}" name="name">
+        </div>
+      </div>
+      <div class="form-group row required">
+        <label for="surname" class="col-3 col-form-label">Priezvisko</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.surname}} is-invalid{{/if}}" type="text" value="{{employee.surname}}" name="surname">
+        </div>
+      </div>
+      <div class="form-group row required">
+        <label for="cityCode" class="col-3 col-form-label">Mesto</label>
+        <div class="col-9">
+          <select class="form-control" name="cityCode">
+            {{#each cities}}
+            <option value="{{this.cityCode}}"{{#if this.selected}} selected{{/if}}>{{this.city}}</option>
+            {{/each}}
+          </select>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="street" class="col-3 col-form-label">Ulica</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.street}} is-invalid{{/if}}" type="text" value="{{employee.street}}" name="street">
+        </div>
+      </div>
+      <div class="form-group row required">
+        <label for="position" class="col-3 col-form-label">Funkcia</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.position}} is-invalid{{/if}}" type="text" value="{{employee.position}}" name="position">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="rank" class="col-3 col-form-label">Hodnosť</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.rank}} is-invalid{{/if}}" type="text" value="{{employee.rank}}" name="rank">
+        </div>
+      </div>
+      <div class="form-group row required">
+        <label for="fromDate" class="col-3 col-form-label">Zamestnaný od [mesiac]</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.fromDate}} is-invalid{{/if}}" type="date" value="{{employee.fromDate}}" name="fromDate">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="toDate" class="col-3 col-form-label">Zamestnaný do [mesiac]</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.toDate}} is-invalid{{/if}}" type="date" value="{{employee.toDate}}" name="toDate">
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary pull-right">Uložiť</button>
+    </form>
+  </div>
+</div>

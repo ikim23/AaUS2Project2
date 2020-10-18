@@ -1,0 +1,27 @@
+<div class="row">
+  <div class="col-md-10 offset-md-1">
+    <div class="row">
+      <div class="col">
+        <h2>Nová krajina</h2>
+      </div>
+    </div>
+    <form action="/add/country" method="POST">
+      <div class="form-group row required">
+        <label for="id" class="col-3 col-form-label">Kód krajiny</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.id}} is-invalid{{/if}}" type="text" value="{{country.id}}" name="id">
+        </div>
+      </div>
+      <div class="form-group row required">
+        <label for="name" class="col-3 col-form-label">Názov</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.name}} is-invalid{{/if}}" type="text" value="{{country.name}}" name="name">
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary pull-right">Uložiť</button>
+    </form>
+  </div>
+</div>
+
+

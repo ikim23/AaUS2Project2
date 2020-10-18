@@ -1,0 +1,34 @@
+<div class="row">
+  <div class="col-md-10 offset-md-1">
+    <div class="row">
+      <div class="col">
+        <h2>Novy obvod</h2>
+      </div>
+    </div>
+    <form action="/add/district" method="POST">
+      <div class="form-group row required">
+        <label for="districtId" class="col-3 col-form-label">Id obovdu</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.districtId}} is-invalid{{/if}}" type="text" value="{{district.districtId}}" name="districtId">
+        </div>
+      </div> 
+      <div class="form-group row required">
+        <label for="district" class="col-3 col-form-label">Názov</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.district}} is-invalid{{/if}}" type="text" value="{{district.district}}" name="district">
+        </div>
+      </div>
+      <div class="form-group row required">
+        <label for="cityCode" class="col-3 col-form-label">PSC</label>
+        <div class="col-9">
+          <select class="form-control" name="cityCode">
+            {{#each cities}}
+            <option value="{{this.cityCode}}">{{this.cityCode}}</option>
+            {{/each}}
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary pull-right">Uložiť</button>
+    </form>
+  </div>
+</div>

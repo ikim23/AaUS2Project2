@@ -1,0 +1,75 @@
+<div class="row">
+  <div class="col-md-10 offset-md-1">
+    <div class="row">
+      <div class="col">
+        <h2>Nový ucastnik</h2>
+      </div>
+    </div>
+    <form action="/add/participant" method="POST" enctype="multipart/form-data">
+      <div class="form-group row required">
+        <label for="personalNumber" class="col-3 col-form-label">Rodné číslo</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.personalNumber}} is-invalid{{/if}}" type="text" value="{{participant.personalNumber}}"
+            name="personalNumber">
+        </div>
+      </div>
+      <div class="form-group row required">
+        <label for="crimeId" class="col-3 col-form-label">Id trestneho cinu</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.crimeId}} is-invalid{{/if}}" type="text" value="{{participant.crimeId}}" name="crimeId">
+        </div>
+      </div>
+      <div class="form-group row required">
+        <label for="type" class="col-3 col-form-label">Typ(*)</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.type}} is-invalid{{/if}}" type="text" value="{{participant.type}}" name="type">
+        </div>
+      </div>
+      <div class="form-group row required">
+        <label for="fromDate" class="col-3 col-form-label">Datum od</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.fromDate}} is-invalid{{/if}}" type="date" value="{{participant.fromDate}}" name="fromDate">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="toDate" class="col-3 col-form-label">Datum do</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.toDate}} is-invalid{{/if}}" type="date" value="{{participant.toDate}}" name="toDate">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="witness" class="col-3 col-form-label">Svedectvo</label>
+        <div class="col-9">
+          <input class="form-control" type="file" name="witness">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="reason" class="col-3 col-form-label">Dovod</label>
+        <div class="col-9">
+          <input class="form-control" type="file" name="reason">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="date" class="col-3 col-form-label">Datum nastupu</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.date}} is-invalid{{/if}}" type="date" value="{{participant.date}}" name="date">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="punishmentLength" class="col-3 col-form-label">Dlzka trestu</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.type}} is-invalid{{/if}}" type="text" value="{{participant.punishmentLength}}" name="punishmentLength">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="punishmentPlace" class="col-3 col-form-label">Miesto vykonu trestu</label>
+        <div class="col-9">
+          <input class="form-control{{#if invalid.type}} is-invalid{{/if}}" type="text" value="{{participant.punishmentPlace}}" name="punishmentPlace">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary pull-right">Uložiť</button>
+    </form>
+    <div class="form-group row ">
+          <label for="type" class="col-8 col-form-label">* - S(svedok), H(hladany), P(podozrivy), O(odsudeny)</label>
+    </div>
+</div>
