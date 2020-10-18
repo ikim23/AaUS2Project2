@@ -1,0 +1,14 @@
+version: '2'
+services:
+
+  oracle:
+    image: sath89/oracle-12c
+    environment:
+      - WEB_CONSOLE=false
+      # uncomment to run import on every startup
+      # - IMPORT_FROM_VOLUME=true
+    volumes:
+      - ./db-data:/u01/app/oracle
+      - ./db-init:/docker-entrypoint-initdb.d
+    ports:
+      - 1521:1521
