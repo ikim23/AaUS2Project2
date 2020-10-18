@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Docker Example</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-6 offset-3">
+          <h1 id="header">TODOs:</h1>
+          <div class="row">
+            <input type="text" id="todo-input" class="form-control col-10">
+            <button id="todo-add-btn" class="btn btn-primary col-2">Add</button>
+          </div>
+          <ul id="list">
+          </ul>
+          <li class="row invisible todo">
+            <span class="col-10 todo-text">Learn JavaScript</span>
+            <div class="col-2 btn-wrapper">
+              <button class="btn btn-success pull-right todo-btn">
+                  <i class="fa fa-check" aria-hidden="true"></i>
+              </button>
+            </div>
+          </li>
+        </div>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>

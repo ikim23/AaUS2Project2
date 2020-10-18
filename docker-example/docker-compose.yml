@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  apache:
+    depends_on:
+      - app
+    image: httpd:2.4
+    volumes:
+      - ./apache:/usr/local/apache2/htdocs
+    ports:
+      - 4000:80
+  app:
+    depends_on:
+      - db
+    build:
+      context: .
+      dockerfile: ./node/Dockerfile
+    image: node-app
+    volumes:
+      - ./node:/usr/src/app
+    ports:
+      - 3000:3000
+  shell:
+    build:
+      context: .
+      dockerfile: ./node/Dockerfile
+    image: node-app
+    volumes:
+      - ./node:/usr/src/app
+    command: bash      
+  db:
+    image: mysql:5.7
+    restart: always
+    env_file: ./mysql/.env
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+  adminer:
+    depends_on:
+      - db
+    image: adminer:4.3
+    restart: always
+    ports:
+      - 8080:8080

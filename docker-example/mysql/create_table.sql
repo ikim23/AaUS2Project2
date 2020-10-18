@@ -1,0 +1,6 @@
+CREATE TABLE todos (
+    id INTEGER  NOT NULL AUTO_INCREMENT,
+    task VARCHAR(50) NOT NULL,
+    done BOOLEAN NOT NULL,
+    PRIMARY KEY (id)
+);
