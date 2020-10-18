@@ -1,0 +1,83 @@
+service: aws-lambda-dynamodb-trigger
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: ${env:STAGE}
+  region: ${env:REGION}
+  versionFunctions: false
+  memorySize: 512
+  timeout: 10
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:GetRecords
+        - dynamodb:GetShardIterator
+        - dynamodb:DescribeStream
+        - dynamodb:ListStreams
+      Resource:
+        Fn::GetAtt: [DynamoDBTableUser, StreamArn]
+    - Effect: Allow
+      Action:
+        - dynamodb:BatchWriteItem
+      Resource:
+        Fn::Join: ['', ['arn:aws:dynamodb:${self:provider.region}:', Ref: AWS::AccountId, ':table/', Ref: DynamoDBTableUserReplica]]
+
+functions:
+  trigger:
+    handler: functions/trigger/trigger.handler
+    environment:
+      TABLE_REPLICA:
+        Ref: DynamoDBTableUserReplica
+
+package:
+  exclude:
+    - ./**
+  include:
+    - functions/**
+plugins:
+  - serverless-plugin-include-dependencies
+
+resources:
+  Resources:
+    # DynamoDB table
+    DynamoDBTableUser:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}-user-${self:provider.stage}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+    # Stream Event for User table
+    EventTableUser:
+      DependsOn: DynamoDBTableUser
+      Type: AWS::Lambda::EventSourceMapping
+      Properties:
+        BatchSize: 25
+        EventSourceArn:
+          Fn::GetAtt: [DynamoDBTableUser, StreamArn]
+        FunctionName:
+          Fn::GetAtt: [TriggerLambdaFunction, Arn]
+        StartingPosition: TRIM_HORIZON
+    # DynamoDB table replica
+    DynamoDBTableUserReplica:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}-user-replica-${self:provider.stage}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
