@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="sk.ikim23.rsswatcher">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <receiver android:name=".service.BootCompletedReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".service.ConnectivityChangeReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <provider
+            android:name=".data.FeedProvider"
+            android:authorities="sk.ikim23.rsswatcher.provider"
+            android:exported="false" />
+
+        <service
+            android:name=".service.DownloadService"
+            android:exported="false" />
+        <service
+            android:name=".service.DeleteService"
+            android:exported="false" />
+        <service
+            android:name=".service.NotificationDeleteService"
+            android:exported="false" />
+
+
+        <activity android:name=".activity.drawer.DrawerActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.feed.FeedActivity"
+            android:parentActivityName=".activity.drawer.DrawerActivity" />
+        <activity
+            android:name=".activity.filter.FilterActivity"
+            android:parentActivityName=".activity.drawer.DrawerActivity" />
+        <activity
+            android:name=".activity.notification.NotificationResultActivity"
+            android:label="@string/title_activity_notification_result" />
+        <activity
+            android:name=".activity.settings.SettingsActivity"
+            android:label="@string/settings"
+            android:parentActivityName=".activity.drawer.DrawerActivity"
+            android:theme="@style/AppThemeActionBar" />
+
+    </application>
+
+</manifest>

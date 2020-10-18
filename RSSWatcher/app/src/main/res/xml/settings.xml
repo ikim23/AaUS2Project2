@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:defaultValue="@string/pref_default_value_sync_frequency"
+        android:entries="@array/pref_sync_frequency_titles"
+        android:entryValues="@array/pref_sync_frequency_values"
+        android:icon="@drawable/ic_sync_black_24dp"
+        android:key="sync_frequency"
+        android:summary="@string/pref_summary_sync_frequency"
+        android:title="@string/pref_title_sync_frequency" />
+    <ListPreference
+        android:defaultValue="@string/pref_default_value_delete_frequency"
+        android:entries="@array/pref_delete_frequency_titles"
+        android:entryValues="@array/pref_delete_frequency_values"
+        android:icon="@drawable/ic_delete_black_24dp"
+        android:key="delete_frequency"
+        android:summary="@string/pref_summary_delete_frequency"
+        android:title="@string/pref_title_delete_frequency" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:icon="@drawable/ic_network_wifi_black_24dp"
+        android:key="only_wifi"
+        android:summary="@string/pref_summary_data_usage"
+        android:title="@string/pref_title_data_usage" />
+</PreferenceScreen>
